@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { ApolloProvider } from "react-apollo";
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { client } from './apollo';
+import GlobalStyles from './Styles/global-styles';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-ReactDOM.render(<App />, document.getElementById('root'));
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(
+<ApolloProvider client={client}>
+    <App />
+    <GlobalStyles />
+    <ToastContainer position={"bottom-center"} autoClose={5000}/>
+</ApolloProvider>,
+document.getElementById('root'));
