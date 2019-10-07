@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { withApollo, WithApolloClient } from "react-apollo";
 import HomePresenter from "./HomePresenter";
 import { Grouping } from "../../Types/types";
-import { useCreateGrouping, ProvideHome, useHomeFetch, useGetAllGrouping, useHomeContext, useGetGrouping, useUpdateGrouping, useDeleteGrouping } from "./HomeProvider";
+import { useCreateGrouping, useGetAllGrouping, useHomeContext, useGetGrouping, useUpdateGrouping, useDeleteGrouping } from "./HomeProvider";
 import CreateGroupModal from "../../Components/CreateGroupModal";
 import { toast } from "react-toastify";
 import { GetAllGrouping } from "../../Types/resolvers";
-import { GET_GROUPING } from "./HomeQueries";
 
 const InitGroupList: Grouping = {
     groupName: "",
@@ -43,7 +42,7 @@ const useFetch = (data: Grouping) => {
         setGroupList([data]);
         setTimeout(() => {
             setLoading(false);
-        }, 100);
+        }, 3000);
     }, []);
     
 
@@ -102,6 +101,7 @@ const HomeContainer: React.FC<IProps> = ({ client }) => {
     const { mutationDeleteGrouping } = useDeleteGrouping();
     const selectedGroupData: Grouping | {} = useGetGrouping(selectedCardIndex);
     console.log("SELECTED_GROUPING: ", selectedGroupData);
+    
     const handleDeleteGroup = ({ groupName }) => {
         mutationDeleteGrouping({
             variables: {
@@ -122,7 +122,7 @@ const HomeContainer: React.FC<IProps> = ({ client }) => {
         const isAvailableGroupName =  AvailableGroupName(newGrouping, getGroupList);
 
         if(isVerifyFormStep) {
-            const { groupName, pdf, sendEmail, redirect, restful } = newGrouping;
+            const { groupName } = newGrouping;
             if(isAvailableGroupName) {
                 mutationCreateGrouping({
                     variables: {

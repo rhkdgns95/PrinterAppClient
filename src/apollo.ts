@@ -1,8 +1,7 @@
 //.2
 import { ApolloClient } from "apollo-client";
-import { Operation, InMemoryCache, HttpLink, ApolloLink } from "apollo-boost";
+import { InMemoryCache, HttpLink } from "apollo-boost";
 import { Grouping } from "./Types/types";
-import { GET_ALL_GROUPING } from "./Routes/Home/HomeQueries";
 
 // function getGroupList() {
 //     return JSON.stringify(localStorage.getItem("X-GROUPING"));
@@ -13,10 +12,8 @@ const link = new HttpLink({ uri: "http://localhost:4000/appGraphql"});
 const getCacheData = () => {
     try {
         const groupList = JSON.parse(localStorage.getItem("X-GROUPING") || "");
-        console.log("DATA: ", groupList);
         return groupList;
     } catch(error) {
-        console.log("getCacheData Error: ", error);
         return null;
     } 
 }
@@ -53,7 +50,6 @@ export const client = new ApolloClient({
         },
         Mutation: {
             CreateGrouping: (_, data: Grouping, { cache }) => {
-                console.log("Create Grouping");
                  
                 const x_grouping = localStorage.getItem("X-GROUPING") || "";
                 if(x_grouping === "") { // 없는 데이터
@@ -62,7 +58,6 @@ export const client = new ApolloClient({
                     console.log("x_grouping 데이터 존재!");
                     console.log("Input Data: ", data);
                     const groupList: Array<any> = JSON.parse(x_grouping);
-                    console.log("Ago Group List: ", JSON.parse(x_grouping));
                     const { groupName, pdf, redirect, restful, sendEmail } = data;
                     const definedData = {
                         __typename: "GroupItem",
@@ -84,9 +79,7 @@ export const client = new ApolloClient({
                             ...restful
                         } 
                     };
-                    console.log("New Group: ", definedData);
                     groupList.push(definedData);
-                    console.log("New GroupList: ", groupList);
                     localStorage.setItem("X-GROUPING", JSON.stringify(groupList));
                     const {} = groupList;
                     cache.writeData({
@@ -103,7 +96,6 @@ export const client = new ApolloClient({
                 
                 // const groups = JSON.parse(`"${x_grouping}"`);
                 // console.log(" Current Groups: ", groups);
-                console.log("Create Grouping: ", data);
                 // cache.writeData({
                 //     data: {
                 //         ...data
@@ -142,7 +134,6 @@ export const client = new ApolloClient({
                             return group;
                         }
                     });
-                    console.log("변경후: ", newGroups);
                     localStorage.setItem("X-GROUPING", JSON.stringify(newGroups));
                     cache.writeData({
                         data: {
@@ -156,7 +147,6 @@ export const client = new ApolloClient({
                 }
             },
             DeleteGrouping: (_, { groupName }, { cache }) => {
-                console.log("이쪽은, DeleteGrouping", groupName);
                 const groups: Grouping[] | null = JSON.parse(localStorage.getItem("X-GROUPING") || "");
                 if(groups) {
                     const newGroups: Grouping[] | null = groups.filter(group => group.groupName !== groupName);

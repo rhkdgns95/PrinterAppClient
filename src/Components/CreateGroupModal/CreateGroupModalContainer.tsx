@@ -1,6 +1,6 @@
 import React from "react";
 import CreateGroupModalPresenter from "./CreateGroupModalPresenter";
-import { useHomeContext, useCreateGrouping } from "../../Routes/Home/HomeProvider";
+import { useHomeContext } from "../../Routes/Home/HomeProvider";
 import { Grouping } from "../../Types/types";
 
 interface IProps {
@@ -25,11 +25,9 @@ const CreateGroupModalContainer: React.FC<IProps> = ({
         onPreviousStep,
         currentStep
     } = useHomeContext();
-    console.log("CurrentStep: ", currentStep);
     // Simple Result
     // const value = useHomeContext(); 
     
-    console.log("FomrCreateGRouping: ", formCreateGrouping);
     return <CreateGroupModalPresenter 
         className={isCreateGroup ? "active" : ""}
         isAgree={isAgree}

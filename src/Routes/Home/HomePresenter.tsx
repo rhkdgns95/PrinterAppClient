@@ -7,6 +7,7 @@ import { GetAllGrouping } from "../../Types/resolvers";
 import { Grouping } from "../../Types/types";
 
 const Container = styled.div`
+    // z-index: 2;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -24,12 +25,57 @@ const Container = styled.div`
         // top: 50%;
         transform: translate(-50%, -50%) scale(1);
     }
+   
+`;
+const Effect = styled.div`
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 18%;
+    top: 4%;
+    transition: .7s, opacity .6s;
+    opacity: 0;
+    transition-timing-function: ease-in-out;
+    transition-delay: 1s;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,.14);
+    border-radius: 50%;
+    // box-shadow: inset 1px 1px 10px rgba(0,0,0,.34);
+    
+`;
+const EffectExtendedTop = styled(Effect)`
+    &.active {
+        opacity: 1;
+        width: 250px;
+        height: 250px;
+    }
+`;
+const EffectExtendedMiddle = styled(Effect)`
+    top: 94%;
+    left: 40%;
+    transition-delay: .9s;
+    &.active {
+        opacity: 1;
+        width: 100px;
+        height: 100px;
+    }
+`;
+const EffectExtendedBottom = styled(Effect)`
+    top: 100%;
+    left: 100%;
+    transition-delay: 1.1s;
+    &.active {
+        opacity: 1;
+        width: 150px;
+        height: 150px;
+    }
 `;
 const Wrapper = styled.div`
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
+    
 `;
 const ScrollScreen = styled.div`
     position: relative;
@@ -91,6 +137,9 @@ const HomePresenter: React.FC<IProps> = ({
         {
             loading && <SpinnerExtended className={"load"}/>
         }
+        <EffectExtendedTop className={loading ? "" : "active"}/>
+        <EffectExtendedMiddle className={loading ? "" : "active"}/>
+        <EffectExtendedBottom className={loading ? "" : "active"}/>
         <Container className={loading ? "" : "active"}>
             <Wrapper>
                 <ScrollScreen className={isDetails ? "active" : ""}>
@@ -98,7 +147,9 @@ const HomePresenter: React.FC<IProps> = ({
                     <DetailsPageExtended className={"page-details"} handleUpdateGroup={handleUpdateGroup}/>
                 </ScrollScreen>
             </Wrapper>
+            
         </Container>
+        
     </React.Fragment>
 );
 

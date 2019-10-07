@@ -10,7 +10,7 @@ const GlobalStyles = createGlobalStyle`
         height: 100%;
         margin: 0;
         padding: 0;
-        overflow-y: hidden;
+        overflow: hidden;
     }
     body {
         position: relative;

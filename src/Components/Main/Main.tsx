@@ -1,10 +1,11 @@
 import React from "react";
-import styled from "../../Styles/typed-components";
+import styled, { keyframes } from "../../Styles/typed-components";
 import GroupCard from "../GroupCard";
 import { useHomeContext } from "../../Routes/Home/HomeProvider";
 import { Grouping } from "../../Types/types";
 import { GetAllGrouping } from "../../Types/resolvers";
 import Menubar from "../Menubar";
+import BackgroundEffects from "../BackgroundEffects";
 
 const Container = styled.div`
     position: relative;
@@ -14,18 +15,114 @@ const CardList = styled.div`
 `;
 const TopTitle = styled.h2`
     text-align: center;
-    color: #8b8b8b;
+    color: #2d62fd;
+    font-size: 14px;
     margin: 0;
-    padding: 30px 0;
+    padding-top: 30px;
 `;
 const MiddleTitle = styled.h5`
     text-align: center;
+    font-size: 20px;
+    color: #7b7b7b;
+    margin: 0;
+    margin: 15px 0;
 `;
 const BottomTitle = styled.h3`
+    position: relative;
+    width: fit-content;
     text-align: center;
-    color: #8b8b8b;
-    padding: 30px 0;
-    margin: 0;
+    margin: 0 auto;
+    font-size: 14px;
+    color: #dfdfdf;
+    padding: 6px 0;
+    overflow: hidden;
+    &::after,
+    &::before {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        width: 30px;
+        top: -1px;
+        left: 0;
+        transform: translateX(-100%);
+        height: 3px;
+        background-color: rgba(75,250,155,.4);
+        animation: ${keyframes => EffectBefore} 5s ease-in-out 2s infinite alternate;
+    }
+    &::after {
+        top: auto;
+        left: auto;
+        right: 0;
+        transform: translateX(100%);
+        bottom: -1px;
+        animation: ${keyframes => EffectAfter} 5s ease-in-out 2s infinite alternate;
+    }
+`;
+const EffectBefore = keyframes`
+    0% { 
+        left: 0;
+        transform: translateX(-100%);
+        opacity: 1;
+    } 
+    50% {
+        opacity: 0;
+    }
+    100% { 
+        left: 100%;
+        transform: translateX(0);
+        opacity: 1;
+    }
+`;
+const EffectAfter = keyframes`
+    0% { 
+        right: 0;
+        transform: translateX(100%);
+        opacity: 0;
+    } 
+    50% {
+        opacity: 1;
+    }
+    100% { 
+        opacity: 0;
+        right: 100%;
+        transform: translateX(0);
+    }
+`;
+const BackgroundEffect = keyframes`
+    0% {
+        left: 0;
+        transform: translateX(-100%);
+        background-color: rgba(250,250,0,.24);
+    }
+    50% {    
+        // left: 100%;
+        background-color: rgba(250,250,250,0);
+    }
+    100% {
+        left: 100%;
+        transform: translateX(0);
+        background-color: rgba(250,250,0,.24);
+    }
+`;
+const BottomTitleWrapper = styled.span`
+    position: relative;
+    z-index: 2;
+`;
+const MainTitle = styled.h5`
+    position: relative;
+    text-align: center;
+    width: fit-content;
+    margin: 50px auto 80px auto;
+    font-size: 16px;
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 100%;
+        height: 2px;
+        background-color: darkgray;
+    }
 `;
 const GroupCardExtended = styled(GroupCard)`
     margin-left: 20px;
@@ -95,9 +192,13 @@ const Main: React.FC<IProps> = ({
                 handleDeleteGroup={handleDeleteGroup}
                 selectedGrouping={selectedGrouping}
             />
-            <TopTitle>Printer Middel Ware</TopTitle>
-            <MiddleTitle>Middle Title</MiddleTitle>
-            <BottomTitle>Bottom Title</BottomTitle>
+            <BackgroundEffects/>
+            <TopTitle>PREVIEW</TopTitle>
+            <MiddleTitle>Choose your desired Grouping</MiddleTitle>
+            <BottomTitle>
+                <BottomTitleWrapper>Create a Grouping for the Printer Middleware</BottomTitleWrapper>
+            </BottomTitle>
+            <MainTitle>GROUPING</MainTitle>
             <CardList>
                 {
                     groups && (

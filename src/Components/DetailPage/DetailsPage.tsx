@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "../../Styles/typed-components";
 import { useHomeContext } from "../../Routes/Home/HomeProvider";
 import CheckboxDetails from "../CheckboxDetails";
 import InputDetails from "../InputDetails/InputDetails";
 import JobList from "../JobList";
 import { Grouping } from "../../Types/types";
-import ButtonIcon from "../ButtonIcon";
 import EditButton from "../EditButton";
 import CheckedDetailsText from "../CheckedDetailsText";
 import { toast } from "react-toastify";
@@ -66,14 +65,6 @@ const Wrapper = styled.div`
     }
 `;
 
-const Title = styled.h2`
-    font-size: 17px;
-    font-weight: 450;
-`;
-
-const InputText = styled.input`
-
-`;
 const CheckboxCell = styled.div`
     display: flex;
     justify-content: space-around;

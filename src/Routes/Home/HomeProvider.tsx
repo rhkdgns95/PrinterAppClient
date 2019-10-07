@@ -1,8 +1,8 @@
-import React, { useContext, useState, ChildContextProvider, useReducer } from "react";
-import { useMutation, useLazyQuery, useQuery } from "react-apollo";
+import React, { useContext, useState, useReducer } from "react";
+import { useMutation, useQuery } from "react-apollo";
 import { CREATE_GROUPING, GET_ALL_GROUPING, GET_GROUPING, UPDATE_GROUPING, DELETE_GROUPING } from "./HomeQueries";
 import { Grouping } from "../../Types/types";
-import { RouteComponentProps, RouteChildrenProps, RouteProps } from "react-router";
+import { RouteProps } from "react-router";
 import { toast } from "react-toastify";
 import { ApolloCache } from "apollo-cache";
 import { GetAllGrouping, GetGroupingResponse, GetGroupingQueryVariables, UpdateGroupingResponse, UpdateGroupingVariables, DeleteGroupingResponse, DeleteGroupingMutationVariables } from "../../Types/resolvers";
@@ -17,7 +17,7 @@ const useGetAllGrouping = (cache: ApolloCache<any>) => {
         result = cache.readQuery({query: GET_ALL_GROUPING});
     } catch(error) {
         console.log("useGetAllGrouping Error: ", error);
-        throw new error;
+        throw new error(error);
     }
     return result;
 }

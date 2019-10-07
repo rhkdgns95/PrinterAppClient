@@ -173,9 +173,6 @@ const DetailsInputCell = styled.div`
     justify-content: center;
     align-items: center;
 `;
-const DetailsOptions = styled.div`
-
-`;
 const FormCardExtended = styled(FormCard)`
     &:not(:nth-of-type(1)) {
         margin-left: 15px;
