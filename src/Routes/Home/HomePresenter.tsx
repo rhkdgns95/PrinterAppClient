@@ -5,6 +5,7 @@ import DetailsPage from "../../Components/DetailPage";
 import Main from "../../Components/Main";
 import { GetAllGrouping } from "../../Types/resolvers";
 import { Grouping } from "../../Types/types";
+import BackgroundEffects from "../../Components/BackgroundEffects";
 
 const Container = styled.div`
     // z-index: 2;
@@ -15,7 +16,8 @@ const Container = styled.div`
     height: 90%;
     max-height: 800px;
     max-width: 1100px;
-    background-color: white;
+    // background-color: white;
+    background: linear-gradient(0deg, rgba(100,127,196,1) 0%, rgba(60,77,121,1) 80%);
     transform: translate(-50%, -50%) scale(.8);
     box-shadow: 0 2px 4px rgba(0,0,0,.24), 0 6px 12px rgba(0,0,0,.42);
     opacity: 0;
@@ -45,7 +47,7 @@ const Effect = styled.div`
 `;
 const EffectExtendedTop = styled(Effect)`
     &.active {
-        opacity: 1;
+        opacity: .4;
         width: 250px;
         height: 250px;
     }
@@ -55,7 +57,7 @@ const EffectExtendedMiddle = styled(Effect)`
     left: 40%;
     transition-delay: .9s;
     &.active {
-        opacity: 1;
+        opacity: .4;
         width: 100px;
         height: 100px;
     }
@@ -65,7 +67,7 @@ const EffectExtendedBottom = styled(Effect)`
     left: 100%;
     transition-delay: 1.1s;
     &.active {
-        opacity: 1;
+        opacity: .4;
         width: 150px;
         height: 150px;
     }
@@ -119,9 +121,11 @@ const SpinnerExtended = styled(Spinner)`
     left: 50%;
     transform: translate(-50%, -50%);
 `
+
 interface IProps {
     loading: boolean;
     isDetails: boolean;
+    currentFile: string;
     getGroupList: GetAllGrouping | null;
     handleUpdateGroup: (updatedGroup: Grouping) => void;
     handleDeleteGroup: (deletedGrouping: Grouping) => void;
@@ -129,6 +133,7 @@ interface IProps {
 const HomePresenter: React.FC<IProps> = ({
     loading,
     isDetails,
+    currentFile,
     getGroupList,
     handleUpdateGroup,
     handleDeleteGroup
@@ -137,14 +142,15 @@ const HomePresenter: React.FC<IProps> = ({
         {
             loading && <SpinnerExtended className={"load"}/>
         }
+        {/* <BackgroundEffects/> */}
         <EffectExtendedTop className={loading ? "" : "active"}/>
         <EffectExtendedMiddle className={loading ? "" : "active"}/>
         <EffectExtendedBottom className={loading ? "" : "active"}/>
         <Container className={loading ? "" : "active"}>
             <Wrapper>
                 <ScrollScreen className={isDetails ? "active" : ""}>
-                    <MainExtended className={loading ? "page-main" : "active"} getGroupList={getGroupList} handleDeleteGroup={handleDeleteGroup}/>
-                    <DetailsPageExtended className={"page-details"} handleUpdateGroup={handleUpdateGroup}/>
+                    <MainExtended className={loading ? "page-main" : "active"} getGroupList={getGroupList} handleDeleteGroup={handleDeleteGroup} currentFile={currentFile}/>
+                    <DetailsPageExtended className={isDetails ? "active" : "page-details"} handleUpdateGroup={handleUpdateGroup}/>
                 </ScrollScreen>
             </Wrapper>
             

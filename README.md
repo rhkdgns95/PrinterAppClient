@@ -10,6 +10,9 @@
 - yarn add apollo-cache-inmemory --save
 - yarn add apollo-link
 - yarn add apollo-client
+*TEST
+- yarn add graphql-yoga
+- yarn add nodemon ts-node
 
 # API
 - [ ] GetGrouping

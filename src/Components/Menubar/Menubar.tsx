@@ -11,8 +11,6 @@ const Container = styled.div`
     border-radius: 50%;
     background: black;
     opacity: 0;
-    
-    
     &::before {
         opacity: 0;
         content: "";
@@ -23,7 +21,7 @@ const Container = styled.div`
         width: 405px;
         height: 405px;
         border-radius: 50%;
-        border: 2px solid #e683ae
+        border: 2px solid cornflowerblue;
         transition: .3s;
     }
     &.active {
@@ -34,7 +32,8 @@ const Container = styled.div`
         top: -200px;
         right: -200px;
         opacity: 1;
-        background: linear-gradient(0deg, rgba(34,40,195,1) 0%, rgba(121,184,204,1) 0%, rgba(232,141,181,1) 0%, rgba(206,25,99,1) 56%);
+        // background: linear-gradient(0deg, rgba(34,40,195,1) 0%, rgba(121,184,204,1) 0%, rgba(232,141,181,1) 0%, rgba(206,25,99,1) 56%);
+        background: linear-gradient(90deg, rgba(92,124,218,1) 0%, rgba(91,17,203,1) 100%)
     }
 `;
 const Wrapper = styled.div`
@@ -55,7 +54,7 @@ const Item = styled.span`
     cursor: pointer;
     & svg {
         transition: .2s;
-        fill: deeppink;
+        fill: #5b4fd4;
     }
     &:hover {
         background-color: #ff9a0e;
@@ -91,7 +90,7 @@ const CancelItem = styled(Item)`
     &:hover {
         background-color: white;
         & svg {
-            fill: #d43476;
+            fill: #5b4fd4;
         }
     }
 `;

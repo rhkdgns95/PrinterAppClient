@@ -12,6 +12,13 @@ import { toast } from "react-toastify";
 const Container = styled.div`
     position: relative;
     padding: 30px;
+    background-color: rgba(0,0,0,64);
+    transition: .3s;
+    transition-delay: 0;
+    &.active {
+        transition-delay: .3s;
+        background-color: rgba(240,240,250,14);
+    }
 `;
 const Header = styled.div`
     font-size: 20px;

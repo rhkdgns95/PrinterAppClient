@@ -16,6 +16,8 @@
     "apollo-link": "^1.2.13",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
+    "graphql-yoga": "^1.18.3",
+    "nodemon": "^1.19.3",
     "react": "^16.10.1",
     "react-apollo": "^3.1.1",
     "react-dom": "^16.10.1",
@@ -24,13 +26,15 @@
     "react-scripts": "3.1.2",
     "react-toastify": "^5.4.0",
     "styled-components": "^4.4.0",
+    "ts-node": "^8.4.1",
     "typescript": "3.6.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "cd src/tmp && nodemon -e ts --exec ts-node index"
   },
   "eslintConfig": {
     "extends": "react-app"

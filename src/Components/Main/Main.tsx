@@ -5,27 +5,29 @@ import { useHomeContext } from "../../Routes/Home/HomeProvider";
 import { Grouping } from "../../Types/types";
 import { GetAllGrouping } from "../../Types/resolvers";
 import Menubar from "../Menubar";
-import BackgroundEffects from "../BackgroundEffects";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
-    position: relative;
+    position: relative;  
 `;
 const CardList = styled.div`
     display: flex;
 `;
 const TopTitle = styled.h2`
     text-align: center;
-    color: #2d62fd;
+    color: #dcdcdd;
     font-size: 14px;
     margin: 0;
-    padding-top: 30px;
+    padding-top: 68px;
+    text-shadow: 0 2px 4px rgba(0,0,0,.42);
 `;
 const MiddleTitle = styled.h5`
     text-align: center;
     font-size: 20px;
-    color: #7b7b7b;
+    color: #b8a4c9;
     margin: 0;
     margin: 15px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,.32);
 `;
 const BottomTitle = styled.h3`
     position: relative;
@@ -36,6 +38,7 @@ const BottomTitle = styled.h3`
     color: #dfdfdf;
     padding: 6px 0;
     overflow: hidden;
+    text-shadow: 0 2px 4px rgba(0,0,0,.32);
     &::after,
     &::before {
         content: "";
@@ -114,14 +117,18 @@ const MainTitle = styled.h5`
     width: fit-content;
     margin: 50px auto 80px auto;
     font-size: 16px;
+    color: #5fffa6;
+    text-shadow: 0 2px 4px rgba(0,0,0,.32);
     &::after {
         content: "";
         position: absolute;
-        left: 0;
-        bottom: -2px;
-        width: 100%;
-        height: 2px;
-        background-color: darkgray;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -9px;
+        width: 50%;
+        height: 1px;
+        border-radius: 50%;
+        background-color: #5fffa6;
     }
 `;
 const GroupCardExtended = styled(GroupCard)`
@@ -129,7 +136,7 @@ const GroupCardExtended = styled(GroupCard)`
 `;
 const AddGroupButton = styled.button`
     background-color: transparent;
-    border: 3px dotted #dfdfdf;
+    border: 3px solid rgba(250,250,250,.06);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -147,21 +154,55 @@ const AddGroupButton = styled.button`
         outline: none;
     }
     &:hover {
-        border: 3px dotted #ff9800;
-        background-color: #feeee0;
+        border: 3px solid #5fffa6;
+        background-color: #3d5697;
         & svg {
-            fill: #ff9800;
-            
+            // fill: #ff9800;
+            fill: #5fffa6;            
+        }
+    }  
+`;
+const FileBox = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;    
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 12px;
+    background-color: #2b3759;
+`;
+const FileIcon = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    & svg {
+        fill: #9696a2;
+    }
+    &.link-main {
+        justify-self: flex-end;
+        margin-left: auto;
+        &:hover {
+            & svg {
+                fill: #3ed5ce;
+            }
         }
     }
-    
+`;
+const FileTitle = styled.span`
+    font-size: 12px;
+    padding-bottom: 3px;
+    color: #9696a2;
 `;
 interface IProps {
-    className?: string
+    className?: string;
+    currentFile: string;
     getGroupList: GetAllGrouping | null;
     handleDeleteGroup: (deletedGrouping: Grouping) => void;
 }
 const Main: React.FC<IProps> = ({
+    currentFile,
     className,
     getGroupList,
     handleDeleteGroup
@@ -185,6 +226,20 @@ const Main: React.FC<IProps> = ({
     console.log("THis is Main, groupingList: ", groups);
     return (
         <Container className={className}>
+            <FileBox>
+                <FileIcon>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M12 9.185l7 6.514v6.301h-14v-6.301l7-6.514zm0-2.732l-9 8.375v9.172h18v-9.172l-9-8.375zm2 14.547h-4v-6h4v6zm10-8.852l-1.361 1.465-10.639-9.883-10.639 9.868-1.361-1.465 12-11.133 12 11.148z"/></svg>
+                </FileIcon>
+                <FileIcon>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z"/></svg>
+                </FileIcon>
+                <FileTitle>{ currentFile }</FileTitle>
+                <FileIcon className={"link-main"}>
+                    <Link to={"/"}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M0 2v20h14v-2h-12v-16h12v-2h-14zm18 7.408l2.963 2.592-2.963 2.592v-1.592h-8v-2h8v-1.592zm-2-4.408v4h-8v6h8v4l8-7-8-7z"/></svg>
+                    </Link>
+                </FileIcon>
+            </FileBox>
             <Menubar 
                 className={selectedCardIndex > -1 ? "active" : ""}
                 toggleDetails={toggleDetails}
@@ -192,8 +247,7 @@ const Main: React.FC<IProps> = ({
                 handleDeleteGroup={handleDeleteGroup}
                 selectedGrouping={selectedGrouping}
             />
-            <BackgroundEffects/>
-            <TopTitle>PREVIEW</TopTitle>
+            <TopTitle>PREVIEW </TopTitle>
             <MiddleTitle>Choose your desired Grouping</MiddleTitle>
             <BottomTitle>
                 <BottomTitleWrapper>Create a Grouping for the Printer Middleware</BottomTitleWrapper>

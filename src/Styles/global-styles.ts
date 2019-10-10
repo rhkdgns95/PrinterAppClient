@@ -16,8 +16,10 @@ const GlobalStyles = createGlobalStyle`
         position: relative;
         font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
         height: 100%;
-        //background: radial-gradient(circle, rgba(227,227,227,1) 0%, rgba(9,94,194,1) 100%);
-        background: linear-gradient(0deg,rgba(34,40,195,1) 0%,rgba(56,191,219,1) 0%,rgba(45,98,253,1) 66%,rgba(45,98,253,1) 84%);
+        
+        // background: linear-gradient(0deg,rgba(34,40,195,1) 0%,rgba(56,191,219,1) 0%,rgba(45,98,253,1) 66%,rgba(45,98,253,1) 84%);
+        background: linear-gradient(0deg, rgba(200,135,255,1) 0%, rgba(123,33,196,1) 75%);
+        background: linear-gradient(90deg, rgba(91,17,203,1) 0%, rgba(101,22,219,1) 100%);
     }
     ul, li, a, p {
         list-style: none;
@@ -29,10 +31,10 @@ const GlobalStyles = createGlobalStyle`
         text-decoration: none;
     }
     .error {
-        animation: ${keyframes => shake} 0.82s cubic-bezier(.36,.07,.19,.97) both;
+        animation: ${keyframes => Shake} 0.82s cubic-bezier(.36,.07,.19,.97) both;
     }
 `;
-const shake = keyframes`
+const Shake = keyframes`
     10%, 90% {
         transform: translate3d(-1px, 0, 0);
     }

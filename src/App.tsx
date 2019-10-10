@@ -4,6 +4,7 @@ import Home from "./Routes/Home";
 import { ThemeProvider } from "./Styles/typed-components";
 import { theme } from "./Styles/theme";
 import { ProvideHome } from "./Routes/Home/HomeProvider";
+import Main from "./Routes/Main";
 
 const App = () => (
   <ThemeProvider theme={theme}>
@@ -17,7 +18,8 @@ const App = () => (
 
 const AppPresenter: React.FC<any> = () => (
   <Switch>
-    <Route path={"/"} exact={true} component={Home}/>
+    <Route path={"/"} exact={true} component={Main}/>
+    <Route path={"/home"} exact={true} component={Home}/>
     <Redirect from={"*"} to={"/"}/>
   </Switch>
 );

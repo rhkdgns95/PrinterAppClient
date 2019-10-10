@@ -7,10 +7,19 @@ import GlobalStyles from './Styles/global-styles';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// export const AppStart = () => {
+//     ReactDOM.render( 
+//         <ApolloProvider client={client}>
+//             <App />
+//             <GlobalStyles />
+//             <ToastContainer position={"bottom-center"} autoClose={5000}/>
+//         </ApolloProvider>,
+//     document.getElementById('root'));
+// }
 ReactDOM.render(
-<ApolloProvider client={client}>
-    <App />
-    <GlobalStyles />
-    <ToastContainer position={"bottom-center"} autoClose={5000}/>
-</ApolloProvider>,
+    <ApolloProvider client={client}>
+        <App />
+        <GlobalStyles />
+        <ToastContainer position={"bottom-center"} autoClose={5000}/>
+    </ApolloProvider>,
 document.getElementById('root'));

@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "../../Styles/typed-components";
+import styled, { keyframes } from "../../Styles/typed-components";
 
 const Container = styled.div`
     width: 180px;
@@ -7,6 +7,9 @@ const Container = styled.div`
     position: relative;
     transition: .3s;
     border-radius: 12px;
+    // background-color: #11ccea;
+    // background-color: #222e2d;
+    background: linear-gradient(0deg, rgba(40,73,134,1) 0%, rgba(40,51,84,1) 98%);
     &:hover {
         box-shadow: 0 2px 4px rgba(0,0,0,.24), 0 6px 12px rgba(0,0,0,.42);
     }
@@ -23,7 +26,7 @@ const Checkbox = styled.input`
     &.active {
     // &:checked {
         & ~ label {
-            border: 1px solid ${props => props.theme.blueColor};
+            border: 2px solid #49d989;
         }
         & ~ .checked-icon {
             opacity: 1;
@@ -38,7 +41,7 @@ const CheckedIcon = styled.div`
     opacity: 0;
     transition: opacity .3s;
     border-bottom: 70px solid transparent;
-    border-left: 70px solid ${props => props.theme.blueColor};
+    border-left: 70px solid #49d989;
     pointer-events: none;
     & svg {
         position: absolute;
@@ -53,7 +56,9 @@ const NameBox = styled.div`
     left: 0;
     width: 100%;
     text-align: center;
-    background-color: ${props => props.theme.blueColor};
+    // background-color: #030608;
+    background: linear-gradient(0deg, rgba(34,46,45,1) 0%, rgba(77,78,113,1) 49%, rgba(34,46,45,1) 98%);
+
 `;
 const GroupName = styled.h1`
     margin: 0 auto;
@@ -73,7 +78,7 @@ const Label = styled.label`
     height: 100%;
     cursor: pointer;
     border-radius: 12px;
-    border: .5px solid #dfdfdf;
+    border: 2px solid rgba(0,0,0,.22);
     box-shadow: 0 1px 2px rgba(0,0,0,.24), 0 2px 3px rgba(0,0,0,.24);
 `;
 const GroupIcon = styled.div`
@@ -86,11 +91,37 @@ const GroupIcon = styled.div`
     justify-content: center;
     align-items: center;
     & svg {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         margin-top: -30px;
-        fill: darkgray;
+        fill: white;
+        opacity: 0;
+        &:nth-of-type(1) {
+            animation: ${keyframes => EffectIcon} 6s ease-in-out alternate infinite;
+        }
+        &:nth-of-type(2) {
+            animation: ${keyframes => EffectIcon2} 6s ease-in-out alternate infinite;
+        }
+        &:nth-of-type(3) {
+            animation: ${keyframes => EffectIcon3} 6s ease-in-out alternate infinite;
+        }
     }
 `;
-
+const EffectIcon = keyframes`
+    0% { opacity: 1; }
+    // 50% { opacity: 0;}
+`;
+const EffectIcon2 = keyframes`
+    50% {opacity: 1;}
+    // 100% {opacity: 0;}
+`;
+const EffectIcon3 = keyframes`
+    0% {opacity: 0;}
+    50% {opacity: 0;}
+    100% {opacity: 1;}
+`;
 interface IProps {
     className: string;
     groupName: string;
@@ -112,7 +143,10 @@ const GroupCard: React.FC<IProps> = ({
             <GroupName>{ groupName }</GroupName>
         </NameBox>
         <GroupIcon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M12 0l-11 6v12.131l11 5.869 11-5.869v-12.066l-11-6.065zm-9 8.23l8 4.363v8.607l-8-4.268v-8.702zm10 12.97v-8.6l8-4.269v8.6l-8 4.269z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M12 0l-11 6v12.131l11 5.869 11-5.869v-12.066l-11-6.065zm7.91 6.646l-7.905 4.218-7.872-4.294 7.862-4.289 7.915 4.365zm-6.91 14.554v-8.6l8-4.269v8.6l-8 4.269z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M12 0l-11 6v12.131l11 5.869 11-5.869v-12.066l-11-6.065zm7.91 6.646l-7.905 4.218-7.872-4.294 7.862-4.289 7.915 4.365zm-16.91 1.584l8 4.363v8.607l-8-4.268v-8.702z"/></svg>
+            {/* <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z"/></svg> */}
         </GroupIcon>
         <Label htmlFor={`group_key_${id}`}/>
     </Container>

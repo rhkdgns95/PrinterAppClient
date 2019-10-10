@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { withApollo, WithApolloClient } from "react-apollo";
+import React, { useState, useEffect, ComponentProps } from "react";
+import { withApollo, WithApolloClient, useApolloClient } from "react-apollo";
 import HomePresenter from "./HomePresenter";
 import { Grouping } from "../../Types/types";
 import { useCreateGrouping, useGetAllGrouping, useHomeContext, useGetGrouping, useUpdateGrouping, useDeleteGrouping } from "./HomeProvider";
 import CreateGroupModal from "../../Components/CreateGroupModal";
 import { toast } from "react-toastify";
 import { GetAllGrouping } from "../../Types/resolvers";
+import { RouteProps, RouteComponentProps, RouterProps } from "react-router";
 
 const InitGroupList: Grouping = {
     groupName: "",
@@ -42,7 +43,7 @@ const useFetch = (data: Grouping) => {
         setGroupList([data]);
         setTimeout(() => {
             setLoading(false);
-        }, 3000);
+        }, 300);
     }, []);
     
 
@@ -84,10 +85,17 @@ const AvailableGroupName = (newGroupName: Grouping, groups: GetAllGrouping | nul
         return true;
     }
 }
-interface IProps extends WithApolloClient<{}> {}
-const HomeContainer: React.FC<IProps> = ({ client }) => {
+//RouteProps
+interface IProps extends RouteComponentProps<any>{
+
+}
+const HomeContainer: React.FC<IProps> = ({ location, history }) => {
+    const { state } = location;
     
-    const { cache } = client;
+    if(!state || !state.currentFile || state.currentFile === "") {
+        history.push("/");
+    }
+    const { cache } = useApolloClient();
     const getGroupList: GetAllGrouping | null = useGetAllGrouping(cache); 
     
     
@@ -152,6 +160,7 @@ const HomeContainer: React.FC<IProps> = ({ client }) => {
                     getGroupList={getGroupList}
                     handleUpdateGroup={handleUpdateGroup}
                     handleDeleteGroup={handleDeleteGroup}
+                    currentFile={state ? state.currentFile : ""}
                 /> 
                 <CreateGroupModal 
                     handleCreateGroup={handleCreateGroup}
@@ -159,5 +168,6 @@ const HomeContainer: React.FC<IProps> = ({ client }) => {
             </React.Fragment>
     )
 };
-export default withApollo(HomeContainer);
+export default HomeContainer;
+// export default withApollo(HomeContainer);
 // export default graphql<any>(ALL_GROUPING)(HomeContainer);

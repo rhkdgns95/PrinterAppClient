@@ -2,7 +2,7 @@ import React, { useContext, useState, useReducer } from "react";
 import { useMutation, useQuery } from "react-apollo";
 import { CREATE_GROUPING, GET_ALL_GROUPING, GET_GROUPING, UPDATE_GROUPING, DELETE_GROUPING } from "./HomeQueries";
 import { Grouping } from "../../Types/types";
-import { RouteProps } from "react-router";
+import { RouteProps, RouteComponentProps } from "react-router";
 import { toast } from "react-toastify";
 import { ApolloCache } from "apollo-cache";
 import { GetAllGrouping, GetGroupingResponse, GetGroupingQueryVariables, UpdateGroupingResponse, UpdateGroupingVariables, DeleteGroupingResponse, DeleteGroupingMutationVariables } from "../../Types/resolvers";
@@ -330,13 +330,14 @@ const useHomeFetch = () => {
         handleChangeTmpRestfulCheckbox
     };
 }
-interface IProps extends RouteProps {
+interface IProps {
     
 }
 const ProvideHome: React.FC<IProps> = ({
     children
 }) => {
     const value = useHomeFetch();
+    console.log("location");
     return (
         <HomeContext.Provider value={{...value}}>
             {

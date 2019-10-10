@@ -118,7 +118,7 @@ const BackgroundEffects = () => (
             <EffectWrapperLeftExtended_1/>
             <EffectWrapperRightExtended_1/>
         </EffectExtended_1>
-        {/* <EffectExtended_2>
+        <EffectExtended_2>
             <EffectWrapperLeftExtended_2 />
         </EffectExtended_2>
         <EffectExtended_3>
@@ -128,7 +128,7 @@ const BackgroundEffects = () => (
         <EffectExtended_4>
             <EffectWrapperLeftExtended_4 />
             <EffectWrapperRightExtended_4 />
-        </EffectExtended_4> */}
+        </EffectExtended_4>
     </Container>
 );
 
