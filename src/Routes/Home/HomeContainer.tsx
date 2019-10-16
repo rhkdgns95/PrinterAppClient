@@ -2,7 +2,7 @@ import React, { useState, useEffect, ComponentProps } from "react";
 import { withApollo, WithApolloClient, useApolloClient } from "react-apollo";
 import HomePresenter from "./HomePresenter";
 import { Grouping } from "../../Types/types";
-import { useCreateGrouping, useGetAllGrouping, useHomeContext, useGetGrouping, useUpdateGrouping, useDeleteGrouping } from "./HomeProvider";
+import { useCreateGrouping, useGetAllGrouping, useHomeContext, useGetGrouping, useUpdateGrouping, useDeleteGrouping, useStartGrouping } from "./HomeProvider";
 import CreateGroupModal from "../../Components/CreateGroupModal";
 import { toast } from "react-toastify";
 import { GetAllGrouping } from "../../Types/resolvers";
@@ -56,6 +56,7 @@ const useFetch = (data: Grouping) => {
 
 const VerifyCreateGroup = (currentStep: number, group: Grouping) => {
     const { groupName, pdf, sendEmail, redirect, restful } = group;
+    
     // 1. groupName.length > 0
     // 2. currentStep = 2
     // 3. isChecked가 하나라도 되어있어야함.
@@ -103,27 +104,57 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
 
     // var initGroupList: Grouping = JSON.parse(groups.groupList) === "" ? InitGroupList : groups.groupList;
     const { loading, groupList } = useFetch(InitGroupList);
-    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping } = useHomeContext();
+    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping, onExeLoading, exeLoading } = useHomeContext();
     const { data: tmpData, mutationCreateGrouping } = useCreateGrouping();
     const { mutationUpdateGrouping } = useUpdateGrouping();
     const { mutationDeleteGrouping } = useDeleteGrouping();
+    const { mutationStartForGrouping } = useStartGrouping(); 
+
     const selectedGroupData: Grouping | {} = useGetGrouping(selectedCardIndex);
     console.log("SELECTED_GROUPING: ", selectedGroupData);
     
+    const handleStartForGrouping = () => {
+        if(exeLoading) {
+            alert("실행중입니다!");
+            return;
+        }
+        onExeLoading();
+        setTimeout(() => {
+            mutationStartForGrouping({
+                variables: {
+                    groupId: parseInt(selectedCardIndex)
+                }
+            });
+        }, 1500);
+        
+    }
     const handleDeleteGroup = ({ groupName }) => {
-        mutationDeleteGrouping({
-            variables: {
-                groupName
-            }
-        });
+        if(exeLoading) {
+            alert("실행중입니다.");
+            return;
+        }
+        onExeLoading();
+        setTimeout(() => {
+            mutationDeleteGrouping({
+                variables: {
+                    groupName
+                }
+            });
+        }, 1500);
     }
     const handleUpdateGroup = (updatedGroup: Grouping) => {
-        console.log("hanldeUpdateGroup: ", updatedGroup);
-        mutationUpdateGrouping({
-            variables: {
-                updatedGroup
-            }
-        });
+        if(exeLoading) {
+            alert("실행중입니다.");
+            return;
+        }
+        onExeLoading();
+        setTimeout(() => {
+            mutationUpdateGrouping({
+                variables: {
+                    updatedGroup
+                }
+            });
+        }, 1500);
     }
     const handleCreateGroup = (currentStep, newGrouping: Grouping) => {
         const isVerifyFormStep = VerifyCreateGroup(currentStep, newGrouping);
@@ -132,14 +163,22 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
         if(isVerifyFormStep) {
             const { groupName } = newGrouping;
             if(isAvailableGroupName) {
-                mutationCreateGrouping({
-                    variables: {
-                        ...newGrouping
-                    }
-                });
-                toast.info(`Create new group '${groupName}'`);
-                resetFormCreateGrouping();
-                toggleCreateModal();
+                if(exeLoading) {
+                    alert("실행중입니다.");
+                    return;
+                }
+                onExeLoading();
+                setTimeout(() => {
+                    mutationCreateGrouping({
+                        variables: {
+                            ...newGrouping
+                        }
+                    });
+                    toast.info(`Create new group '${groupName}'`);
+                    resetFormCreateGrouping();
+                    toggleCreateModal();
+                }, 1500);
+                
             } else {
                 onErrorLoading();
                 toast.error("Duplicate group names cannot be used.")
@@ -160,6 +199,7 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
                     getGroupList={getGroupList}
                     handleUpdateGroup={handleUpdateGroup}
                     handleDeleteGroup={handleDeleteGroup}
+                    handleStartForGrouping={handleStartForGrouping}
                     currentFile={state ? state.currentFile : ""}
                 /> 
                 <CreateGroupModal 

@@ -15,7 +15,7 @@ const CardList = styled.div`
 `;
 const TopTitle = styled.h2`
     text-align: center;
-    color: #dcdcdd;
+    color: white;
     font-size: 14px;
     margin: 0;
     padding-top: 68px;
@@ -25,6 +25,7 @@ const MiddleTitle = styled.h5`
     text-align: center;
     font-size: 20px;
     color: #b8a4c9;
+    color: #a6d3fa;
     margin: 0;
     margin: 15px 0;
     text-shadow: 0 2px 4px rgba(0,0,0,.32);
@@ -35,7 +36,7 @@ const BottomTitle = styled.h3`
     text-align: center;
     margin: 0 auto;
     font-size: 14px;
-    color: #dfdfdf;
+    color: white;
     padding: 6px 0;
     overflow: hidden;
     text-shadow: 0 2px 4px rgba(0,0,0,.32);
@@ -50,6 +51,7 @@ const BottomTitle = styled.h3`
         transform: translateX(-100%);
         height: 3px;
         background-color: rgba(75,250,155,.4);
+        box-shadow: 0 2px 4px rgba(0,250,250,.42);
         animation: ${keyframes => EffectBefore} 5s ease-in-out 2s infinite alternate;
     }
     &::after {
@@ -58,6 +60,7 @@ const BottomTitle = styled.h3`
         right: 0;
         transform: translateX(100%);
         bottom: -1px;
+        box-shadow: 0 -2px 4px rgba(0,250,250,.42);
         animation: ${keyframes => EffectAfter} 5s ease-in-out 2s infinite alternate;
     }
 `;
@@ -169,8 +172,8 @@ const FileBox = styled.div`
     display: flex;
     width: 100%;
     align-items: center;
-    padding: 12px;
-    background-color: #2b3759;
+    padding: 7px 12.5px;
+    background-color: rgba(0,20,30,.22);
 `;
 const FileIcon = styled.div`
     display: flex;
@@ -178,7 +181,7 @@ const FileIcon = styled.div`
     align-items: center;
     margin-right: 10px;
     & svg {
-        fill: #9696a2;
+        fill: white;
     }
     &.link-main {
         justify-self: flex-end;
@@ -193,19 +196,21 @@ const FileIcon = styled.div`
 const FileTitle = styled.span`
     font-size: 12px;
     padding-bottom: 3px;
-    color: #9696a2;
+    color: white;
 `;
 interface IProps {
     className?: string;
     currentFile: string;
     getGroupList: GetAllGrouping | null;
     handleDeleteGroup: (deletedGrouping: Grouping) => void;
+    handleStartForGrouping: () => any;
 }
 const Main: React.FC<IProps> = ({
     currentFile,
     className,
     getGroupList,
-    handleDeleteGroup
+    handleDeleteGroup,
+    handleStartForGrouping
 }) => {
     const { 
         toggleCreateModal, 
@@ -243,6 +248,7 @@ const Main: React.FC<IProps> = ({
             <Menubar 
                 className={selectedCardIndex > -1 ? "active" : ""}
                 toggleDetails={toggleDetails}
+                handleStartForGrouping={handleStartForGrouping}
                 onCancelCardIndex={onCancelCardIndex}
                 handleDeleteGroup={handleDeleteGroup}
                 selectedGrouping={selectedGrouping}

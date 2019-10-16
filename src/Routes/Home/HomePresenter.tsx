@@ -17,7 +17,9 @@ const Container = styled.div`
     max-height: 800px;
     max-width: 1100px;
     // background-color: white;
-    background: linear-gradient(0deg, rgba(100,127,196,1) 0%, rgba(60,77,121,1) 80%);
+    // background: linear-gradient(0deg, rgba(100,127,196,1) 0%, rgba(60,77,121,1) 80%);
+    // background: rgba(0,0,0,.3);
+    background: rgba(250,250,250,.1);
     transform: translate(-50%, -50%) scale(.8);
     box-shadow: 0 2px 4px rgba(0,0,0,.24), 0 6px 12px rgba(0,0,0,.42);
     opacity: 0;
@@ -129,6 +131,7 @@ interface IProps {
     getGroupList: GetAllGrouping | null;
     handleUpdateGroup: (updatedGroup: Grouping) => void;
     handleDeleteGroup: (deletedGrouping: Grouping) => void;
+    handleStartForGrouping: () => any;
 }
 const HomePresenter: React.FC<IProps> = ({
     loading,
@@ -136,7 +139,8 @@ const HomePresenter: React.FC<IProps> = ({
     currentFile,
     getGroupList,
     handleUpdateGroup,
-    handleDeleteGroup
+    handleDeleteGroup,
+    handleStartForGrouping
 }) => (
     <React.Fragment>
         {
@@ -149,13 +153,12 @@ const HomePresenter: React.FC<IProps> = ({
         <Container className={loading ? "" : "active"}>
             <Wrapper>
                 <ScrollScreen className={isDetails ? "active" : ""}>
-                    <MainExtended className={loading ? "page-main" : "active"} getGroupList={getGroupList} handleDeleteGroup={handleDeleteGroup} currentFile={currentFile}/>
+                    <MainExtended className={loading ? "page-main" : "active"} getGroupList={getGroupList} handleDeleteGroup={handleDeleteGroup} currentFile={currentFile} handleStartForGrouping={handleStartForGrouping}/>
                     <DetailsPageExtended className={isDetails ? "active" : "page-details"} handleUpdateGroup={handleUpdateGroup}/>
                 </ScrollScreen>
             </Wrapper>
             
         </Container>
-        
     </React.Fragment>
 );
 

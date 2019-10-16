@@ -5,12 +5,14 @@ import { ThemeProvider } from "./Styles/typed-components";
 import { theme } from "./Styles/theme";
 import { ProvideHome } from "./Routes/Home/HomeProvider";
 import Main from "./Routes/Main";
+import LoadingProgressbar from "./Routes/LoadingProgressbar";
 
 const App = () => (
   <ThemeProvider theme={theme}>
     <BrowserRouter>
       <ProvideHome>
         <AppPresenter />
+        <LoadingProgressbar />  
       </ProvideHome>
     </BrowserRouter>
   </ThemeProvider>

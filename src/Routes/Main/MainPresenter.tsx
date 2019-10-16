@@ -81,8 +81,8 @@ const MenuScreen = styled.div`
     max-height: 634px;
     overflow: auto;
     // background: linear-gradient(0deg, rgba(184,239,255,1) 0%, rgba(11,185,171,1) 100%);
-    // background-color: rgba(0,0,0,.2);
-    background: linear-gradient(0deg, rgba(42,50,81,1) 0%, rgba(61,74,126,1) 100%);
+    background-color: rgba(0,0,0,.2);
+    // background: linear-gradient(0deg, rgba(42,50,81,1) 0%, rgba(61,74,126,1) 100%);
 
     ::-webkit-scrollbar {
         width: 5px;

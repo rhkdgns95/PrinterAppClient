@@ -1,13 +1,29 @@
 //.2
 import { ApolloClient } from "apollo-client";
+import { ApolloLink, concat, Operation, split } from "apollo-link";
 import { InMemoryCache, HttpLink } from "apollo-boost";
 import { Grouping } from "./Types/types";
+import { createHttpLink } from "apollo-link-http";
 
 // function getGroupList() {
 //     return JSON.stringify(localStorage.getItem("X-GROUPING"));
 // }
+
+const httpLink = new HttpLink({ uri: "http://localhost:4000/appGraphql"});
+const middlewareLink = new ApolloLink((operation: Operation, forward: any) => {
+    console.log("MiddleWares: ", JSON.stringify(localStorage.getItem('X-GROUPING')) || "");
+    operation.setContext({
+        headers: {
+            "X-GROUPING": localStorage.getItem('X-GROUPING')
+        }
+    })
+    return forward(operation);
+});
+
 const cache = new InMemoryCache();
-const link = new HttpLink({ uri: "http://localhost:4000/appGraphql"});
+const link = middlewareLink.concat(httpLink);
+
+// const link = new HttpLink({ uri: "http://localhost:4000/appGraphql"});
 
 const getCacheData = () => {
     try {
@@ -33,7 +49,7 @@ export const client = new ApolloClient({
     defaultOptions: { 
         watchQuery: {
             fetchPolicy: 'cache-and-network'
-        }
+        },
         // query: GET_ALL_GROUPING
     },
     resolvers: {

@@ -1,11 +1,11 @@
 import React, { useContext, useState, useReducer } from "react";
 import { useMutation, useQuery } from "react-apollo";
-import { CREATE_GROUPING, GET_ALL_GROUPING, GET_GROUPING, UPDATE_GROUPING, DELETE_GROUPING } from "./HomeQueries";
+import { CREATE_GROUPING, GET_ALL_GROUPING, GET_GROUPING, UPDATE_GROUPING, DELETE_GROUPING, START_FOR_GROUPING } from "./HomeQueries";
 import { Grouping } from "../../Types/types";
 import { RouteProps, RouteComponentProps } from "react-router";
 import { toast } from "react-toastify";
 import { ApolloCache } from "apollo-cache";
-import { GetAllGrouping, GetGroupingResponse, GetGroupingQueryVariables, UpdateGroupingResponse, UpdateGroupingVariables, DeleteGroupingResponse, DeleteGroupingMutationVariables } from "../../Types/resolvers";
+import { GetAllGrouping, GetGroupingResponse, GetGroupingQueryVariables, UpdateGroupingResponse, UpdateGroupingVariables, DeleteGroupingResponse, DeleteGroupingMutationVariables, StartForGroupingMutationResponse, StartForGroupingMutationVariables } from "../../Types/resolvers";
 
 const HomeContext = React.createContext<any>({});
 
@@ -180,8 +180,23 @@ const formGroupReducer: React.Reducer<Grouping, {name: string, type?: string, ch
         }
     }
 }
+const useStartGrouping = () => {
+    const [ mutationStartForGrouping ] = useMutation<StartForGroupingMutationResponse, StartForGroupingMutationVariables>(START_FOR_GROUPING,
+        {
+            onCompleted: data => {
+                console.log("Start For Grouping Success! ", data);
+            },
+            onError:data => {
+                console.log("Start For Grouping Error! ", data);
+            }
+        })
+    return {
+        mutationStartForGrouping
+    }
+}
 const useHomeFetch = () => {
     const [ isDetails, setIsDetails ] = useState<boolean>(false);
+    const [ exeLoading, setExeLoading ] = useState<boolean>(false);
     const [ isCreateGroup, setIsCreateGroup ] = useState<boolean>(false);
     const [ isAgree, setIsAgree ] = useState<boolean>(false);
     const [ isUpdate, setIsUpdate ] = useState<boolean>(false);
@@ -214,7 +229,14 @@ const useHomeFetch = () => {
             // }, 1500);
         }
     }
-   
+    const onExeLoading = () => {
+        if(!exeLoading) {
+            setExeLoading(true);
+            setTimeout(() => {
+                setExeLoading(false);
+            }, 1500);
+        }
+    }
     const toggleCreateModal = () => {
         setIsCreateGroup(!isCreateGroup);
     }
@@ -303,6 +325,7 @@ const useHomeFetch = () => {
         isDetails,
         isAgree,
         isUpdate,
+        exeLoading,
         errorLoading,
         isCreateGroup,
         toggleCreateModal,
@@ -327,7 +350,8 @@ const useHomeFetch = () => {
         handleTmpGrouping,
         handleChangeTmpGrouping,
         handleTextChangeTmpGrouping,
-        handleChangeTmpRestfulCheckbox
+        handleChangeTmpRestfulCheckbox,
+        onExeLoading
     };
 }
 interface IProps {
@@ -346,4 +370,4 @@ const ProvideHome: React.FC<IProps> = ({
         </HomeContext.Provider>
     )
 }
-export { useHomeContext, useCreateGrouping, ProvideHome, useHomeFetch, useGetAllGrouping, useGetGrouping, useUpdateGrouping, useDeleteGrouping };
+export { useHomeContext, useCreateGrouping, ProvideHome, useHomeFetch, useGetAllGrouping, useGetGrouping, useUpdateGrouping, useDeleteGrouping, useStartGrouping };

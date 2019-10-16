@@ -3,6 +3,11 @@ import { Grouping } from "./types";
 type groups = {
     groupList: Grouping[] | null
 }
+type StartForGrouping = {
+    ok: boolean;
+    error: string | null;
+    group: Grouping | null;
+}
 export interface GetAllGrouping {
     groups: groups;
 }
@@ -26,4 +31,10 @@ export interface DeleteGroupingResponseVariables {
 }
 export interface DeleteGroupingResponse {
     DeleteGrouping: DeleteGroupingResponseVariables;
+}
+export interface StartForGroupingMutationVariables {
+    groupId: number;
+}
+export interface StartForGroupingMutationResponse {
+    StartForGrouping: StartForGrouping
 }

@@ -9,7 +9,10 @@ const Container = styled.div`
     border-radius: 12px;
     // background-color: #11ccea;
     // background-color: #222e2d;
-    background: linear-gradient(0deg, rgba(40,73,134,1) 0%, rgba(40,51,84,1) 98%);
+    // background: linear-gradient(0deg, rgba(40,73,134,1) 0%, rgba(40,51,84,1) 98%);
+    // background: linear-gradient(90deg, rgba(127,147,182,1) 0%, rgba(40,157,164,1) 53%, rgba(127,147,182,1) 100%);
+    // background: linear-gradient(0deg,rgba(140,253,234,.3) 0%,rgba(110,151,254,.3) 98%);
+    background:rgba(30,30,250,.22);
     &:hover {
         box-shadow: 0 2px 4px rgba(0,0,0,.24), 0 6px 12px rgba(0,0,0,.42);
     }
@@ -57,8 +60,8 @@ const NameBox = styled.div`
     width: 100%;
     text-align: center;
     // background-color: #030608;
-    background: linear-gradient(0deg, rgba(34,46,45,1) 0%, rgba(77,78,113,1) 49%, rgba(34,46,45,1) 98%);
-
+    // background: linear-gradient(0deg, rgba(34,46,45,1) 0%, rgba(77,78,113,1) 49%, rgba(34,46,45,1) 98%);
+    background: linear-gradient(0deg, rgba(4,67,116,1) 0%, rgba(65,114,241,1) 49%, rgba(4,67,116,1) 100%);
 `;
 const GroupName = styled.h1`
     margin: 0 auto;
@@ -110,17 +113,19 @@ const GroupIcon = styled.div`
     }
 `;
 const EffectIcon = keyframes`
-    0% { opacity: 1; }
+    0% { opacity: 1; fill: #ffe8b9;}
+    50% {
+    }
     // 50% { opacity: 0;}
 `;
 const EffectIcon2 = keyframes`
-    50% {opacity: 1;}
+    50% {opacity: 1; }
     // 100% {opacity: 0;}
 `;
 const EffectIcon3 = keyframes`
     0% {opacity: 0;}
-    50% {opacity: 0;}
-    100% {opacity: 1;}
+    50% {opacity: 0; }
+    100% {opacity: 1; fill: rgba(210,220,250.24);}
 `;
 interface IProps {
     className: string;

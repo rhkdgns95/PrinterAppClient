@@ -102,4 +102,39 @@ export const UPDATE_GROUPING = gql`
             groupName
         } 
     }
-`
+`;
+
+export const START_FOR_GROUPING = gql`
+    mutation startForGrouping($groupId: Int!) {
+        StartForGrouping(groupId: $groupId) {
+            ok
+            error
+            grouping {
+                groupName
+                pdf {
+                    isChecked
+                    filePath
+                    fileName
+                }
+                sendEmail {
+                    isChecked
+                    email
+                    password
+                    mailTitle
+                    mailContent
+                }
+                restful {
+                    isChecked
+                    isLogging
+                    isSendFile
+                    data
+                }
+                redirect {
+                    isChecked
+                    ipAddress
+                    port
+                }
+            }
+        }
+    }
+`;

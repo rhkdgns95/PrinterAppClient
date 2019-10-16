@@ -17,9 +17,11 @@ const GlobalStyles = createGlobalStyle`
         font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
         height: 100%;
         
-        // background: linear-gradient(0deg,rgba(34,40,195,1) 0%,rgba(56,191,219,1) 0%,rgba(45,98,253,1) 66%,rgba(45,98,253,1) 84%);
-        background: linear-gradient(0deg, rgba(200,135,255,1) 0%, rgba(123,33,196,1) 75%);
-        background: linear-gradient(90deg, rgba(91,17,203,1) 0%, rgba(101,22,219,1) 100%);
+        background: linear-gradient(0deg,rgba(34,40,195,1) 0%,rgba(56,191,219,1) 0%,rgba(45,98,253,1) 66%,rgba(45,98,253,1) 84%);
+        // background: linear-gradient(0deg, rgba(200,135,255,1) 0%, rgba(123,33,196,1) 75%);
+        // background: linear-gradient(0deg, rgba(62,26,83,1) 0%, rgba(5,143,204,1) 0%, rgba(4,61,162,1) 100%)
+        // background: linear-gradient(90deg, rgba(68,84,111,1) 0%, rgba(40,157,164,1) 53%, rgba(68,84,111,1) 100%);
+
     }
     ul, li, a, p {
         list-style: none;

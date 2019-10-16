@@ -15,6 +15,12 @@ const Container = styled.div`
             left: 30px;
             transform: translateX(-50%);
             background-color: #8b9be3;
+            transition: .2s;
+        }
+        &.active {
+            &::after {
+                background-color: #2ebfb2;
+            }
         }
     }
 `;
