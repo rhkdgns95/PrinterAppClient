@@ -12,11 +12,13 @@ import { createHttpLink } from "apollo-link-http";
 const httpLink = new HttpLink({ uri: "http://localhost:4000/appGraphql"});
 const middlewareLink = new ApolloLink((operation: Operation, forward: any) => {
     console.log("MiddleWares: ", JSON.stringify(localStorage.getItem('X-GROUPING')) || "");
+    const token = localStorage.getItem('X-GROUPING');
+    console.log("TOKEN: ", token);
     operation.setContext({
         headers: {
-            "X-GROUPING": localStorage.getItem('X-GROUPING')
+            "X-GROUPING": token
         }
-    })
+    });
     return forward(operation);
 });
 

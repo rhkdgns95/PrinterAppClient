@@ -18,8 +18,9 @@ const Container = styled.div`
         background-color: #3fc0ca;
     }
 `;
-
 const Text = styled.p`
+    display: flex;
+    align-items: center;
     font-weight: bold;
     padding-bottom: 6px;
     font-size: 14px;
@@ -30,20 +31,27 @@ const Data = styled.p`
     padding-bottom: 3px;
     border-bottom: 1px solid #dfdfdf;
 `;
-
+const Job = styled.span`
+    color: #c1cccb;
+    font-size: 11px;
+    font-weight: 400;
+    margin-left: auto;
+`;
 interface IProps {
     text: string;
     value: string;
     className: string;
+    job: "PDF" | "SendEmail" | "Redirect" | "RESTFul" | "";
 }
 const ConfirmText: React.FC<IProps> = ({
     text,
     value,
-    className
+    className,
+    job
 }) => (
     <Container className={className}>
-        <Text>{ text }</Text>
-        <Data>{ value === "" ? "..." : value}</Data>
+        <Text>{ text } <Job> { job }</Job></Text>
+        <Data>{ value === "" ? "-" : value}</Data>
     </Container>
 );
 

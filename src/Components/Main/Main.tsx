@@ -228,7 +228,6 @@ const Main: React.FC<IProps> = ({
     } else {
         groups = null;
     }
-    console.log("THis is Main, groupingList: ", groups);
     return (
         <Container className={className}>
             <FileBox>

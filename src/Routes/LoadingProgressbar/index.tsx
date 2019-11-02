@@ -7,7 +7,7 @@ const Container = styled.div`
     top: 0;
     left: 0;
     width: 0;
-    height: 3px;
+    height: 5px;
     background: linear-gradient(34deg, rgba(190,22,185,1) 0%, rgba(179,55,57,1) 46%, rgba(175,146,8,1) 90%);
     &.active {
         width: 100%;

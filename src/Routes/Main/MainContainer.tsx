@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import MainPresenter from "./MainPresenter";
 const LOAIDNG_TIME = 1000;
 
@@ -9,7 +9,7 @@ const useFetch = () => {
         // File 가져오기.
 
     };
-
+    
     setTimeout(MainLoading, LOAIDNG_TIME);
 
     return {

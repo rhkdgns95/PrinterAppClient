@@ -4,7 +4,7 @@ import styled from "../../Styles/typed-components";
 const Container = styled.div`
     position: relative;
     padding-left: 30px;
-    padding-bottom: 5px;
+    padding-bottom: 2px;
 `;
 const Icon = styled.div`
     position: absolute;
@@ -16,8 +16,8 @@ const Icon = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     & svg {
         transition: .25s;
         opacity: 0;

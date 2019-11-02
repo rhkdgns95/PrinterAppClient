@@ -8,6 +8,7 @@ import { Grouping } from "../../Types/types";
 import EditButton from "../EditButton";
 import CheckedDetailsText from "../CheckedDetailsText";
 import { toast } from "react-toastify";
+import InputIcon from "../InputIcon";
 
 const Container = styled.div`
     position: relative;
@@ -86,7 +87,7 @@ const CheckboxCell = styled.div`
 `;
 
 const InputDetailsExtended = styled(InputDetails)`
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
 `;
 const JobListExtended = styled(JobList)`
     width: flex;
@@ -98,8 +99,23 @@ const JobListWrapper = styled.div`
         width: 100%;
         justify-content: space-between;
         & > div {
-            width: 48%;    
+            width: 49%;    
         }
+    }
+    &.restful {
+        position: absolute;
+        width: auto;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-flow: column;
+        & > div {
+            width: auto;    
+        }
+    }
+    &:not(:nth-last-of-type(1)) {
+        margin-bottom: 5px;
     }
 `;
 const ExitButton = styled.div`    
@@ -153,7 +169,8 @@ const DetailsPage: React.FC<IProps> = ({
         handleSelectedGrouping,
         handleChangeTmpGrouping,
         handleTextChangeTmpGrouping,
-        handleChangeTmpRestfulCheckbox
+        handleChangeTmpRestfulCheckbox,
+        isRestfulFunc
      } = useHomeContext();
     const { groupName, pdf,  redirect,  restful, sendEmail } = tmpGrouping;
     const handleEditButton = () => {   
@@ -229,6 +246,14 @@ const DetailsPage: React.FC<IProps> = ({
                             <InputDetailsExtended className={"input-details"} title={"Email"} value={sendEmail.email} name={"email"} onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}} readOnly={!isUpdate}/>
                             <InputDetailsExtended className={"input-details"} title={"Password"} type={"password"} value={sendEmail.password} name={"password"} onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}} readOnly={!isUpdate}/>
                         </JobListWrapper>
+                        {
+                            <>
+                            { console.log("sendEmail: ", sendEmail) }
+                            </>
+                        }
+                        <JobListWrapper>
+                            <InputDetailsExtended className={"input-details"} title={"Recipents"} value={sendEmail.destinationEmails} name={"destinationEmails"} onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}} readOnly={!isUpdate}/>
+                        </JobListWrapper>
                         <JobListWrapper className={"active"}>
                             <InputDetailsExtended className={"input-details"} title={"Mail Title"} value={sendEmail.mailTitle} name={"mailTitle"} onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}} readOnly={!isUpdate}/>
                             <InputDetailsExtended className={"input-details"} title={"Mail Content"} value={sendEmail.mailContent} name={"mailContent"} onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}} readOnly={!isUpdate}/>
@@ -240,12 +265,21 @@ const DetailsPage: React.FC<IProps> = ({
                             <InputDetailsExtended className={"input-details"} title={"Port"} value={redirect.port} name={"port"} onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}} readOnly={!isUpdate}/>
                         </JobListWrapper>
                     </JobListExtended>
-                    <JobListExtended type={"restful"} className={isUpdate ? "active" : "details-job"} title={"RESTFul"}>
-                        <JobListWrapper className={"active"}>
-                            <CheckedDetailsText className={isUpdate ? "active" : ""} name={"isLogging"} text={"로깅여부"} checked={restful.isLogging} onChange={isUpdate ? handleChangeTmpRestfulCheckbox : () => {}} readOnly={!isUpdate}/>
-                            <CheckedDetailsText className={isUpdate ? "active" : ""} name={"isSendFile"} text={"파일전송 여부"} checked={restful.isSendFile} onChange={isUpdate ? handleChangeTmpRestfulCheckbox : () => {}} readOnly={!isUpdate}/>
+                    <JobListExtended type={"restful"} className={`${isUpdate ? "active" : "details-job"} restful`} title={"RESTFul"}>
+                        <JobListWrapper className={"active restful"}>
+                            <CheckedDetailsText className={isUpdate ? "active" : ""} name={"isLogging"} text={"로깅"} checked={restful.isLogging} onChange={isUpdate ? handleChangeTmpRestfulCheckbox : () => {}} readOnly={!isUpdate}/>
+                            <CheckedDetailsText className={isUpdate ? "active" : ""} name={"isSendFile"} text={"파일전송"} checked={restful.isSendFile} onChange={isUpdate ? handleChangeTmpRestfulCheckbox : () => {}} readOnly={!isUpdate}/>
                         </JobListWrapper>
-                        <InputDetailsExtended className={"input-details"} title={"Port"} value={restful.data} name={"data"} onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}} readOnly={!isUpdate}/>
+                        <InputIcon
+                            className={`${restful.data !== "" ? "active" : "input"} edit ${isUpdate ? "" : "no-update"}`}
+                            placeholder={"Function Data"}
+                            value={restful.data}
+                            type={"textarea"}
+                            name={"data"}
+                            svgPath="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z"
+                            onChange={isUpdate ? handleTextChangeTmpGrouping : () => {}}
+                            isFunction={isRestfulFunc.value}
+                        />
                     </JobListExtended>
                 </Wrapper>
             </Box>

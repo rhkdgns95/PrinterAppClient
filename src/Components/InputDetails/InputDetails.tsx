@@ -6,8 +6,8 @@ const Container = styled.div`
     &.active {
         & input {
             padding-left: 10px;
-            padding-top: 20px;
-            padding-bottom: 6px;
+            padding-top: 21px;
+            padding-bottom: 5px;
             font-size: 11px;
         }
         & label {
@@ -77,6 +77,7 @@ const InputDetails: React.FC<IProps> = ({
         value={value}
         onChange={onChange}
         readOnly={readOnly}
+        autoComplete={"off"}
         />
         <Label>
             { title }

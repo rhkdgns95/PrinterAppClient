@@ -44,7 +44,7 @@ const Container = styled.button`
         border: 2px solid #34afff;
     }
     &:hover {
-        background-color: white;
+        background-color: inherit;
         &.cancel {
             color: #ff9149;
             & svg {

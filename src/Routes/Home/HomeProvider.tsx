@@ -1,4 +1,4 @@
-import React, { useContext, useState, useReducer } from "react";
+import React, { useContext, useState, useReducer, useCallback } from "react";
 import { useMutation, useQuery } from "react-apollo";
 import { CREATE_GROUPING, GET_ALL_GROUPING, GET_GROUPING, UPDATE_GROUPING, DELETE_GROUPING, START_FOR_GROUPING } from "./HomeQueries";
 import { Grouping } from "../../Types/types";
@@ -25,6 +25,9 @@ const useGetGrouping = (index: number) => {
     let { data: { GetGrouping = {} } = {} } = useQuery<GetGroupingResponse, GetGroupingQueryVariables>(GET_GROUPING,{
         variables: {
             index
+        },
+        onError:data => {
+            console.log("useGetGrouping Error: ", data);
         }
     });
     return GetGrouping;
@@ -32,11 +35,10 @@ const useGetGrouping = (index: number) => {
 const useCreateGrouping = () => {
     const [ mutationCreateGrouping, { data }] = useMutation<any, Grouping>(CREATE_GROUPING, {
         onCompleted: data => {
-            console.log("SUCCESS: ", data);
         },
-        onError: data => [
-            console.log("ERROR", data)
-        ]
+        onError: data => {
+            console.log("useCreateGrouping Error: ", data);
+        }
     });
     return {
         data,
@@ -45,11 +47,8 @@ const useCreateGrouping = () => {
 }
 const useUpdateGrouping = () => {
     const [ mutationUpdateGrouping ] = useMutation<UpdateGroupingResponse, UpdateGroupingVariables>(UPDATE_GROUPING, {
-        onCompleted:data => {
-            console.log("UpdateGrouping완료함! ", data);
-        },
         onError:data => {
-            console.log("UpdateGrouping Error됨! ", data);
+            console.log("useUpdateGrouping Error: ", data);
         }
     });
     return {
@@ -61,6 +60,9 @@ const useDeleteGrouping = () => {
         onCompleted: data => {
             const { groupName } = data.DeleteGrouping;
             toast.success(`Group name '${groupName}' Deleted.`);
+        },
+        onError: data => {
+            console.log("useDeleteGrouping Error: ", data);
         }
     })
     return {
@@ -84,6 +86,7 @@ const InitGroupData: Grouping = {
         isChecked: false,
         email: "",
         password: "",
+        destinationEmails: "",
         mailTitle: "",
         mailContent: ""
     },
@@ -94,107 +97,134 @@ const InitGroupData: Grouping = {
     }
 }
 
-const formGroupReducer: React.Reducer<Grouping, {name: string, type?: string, checked?: boolean, value?: string, tmpValue?: Grouping}> = (state, action) => {
-    const formGrouping = state;
-    const { groupName, pdf, sendEmail, redirect, restful } = formGrouping;
-    var object = {};
-    if(action.name === "checkbox") {
-        switch(action.type) {
-            case "pdf":
-                object = pdf;
-                break;
-            case "sendEmail":
-                object = sendEmail
-                break;
-            case "restful":
-                object = restful;
-                break;
-            case "redirect":
-                object = redirect;
-                break;
-            default: throw new Error(`unexpected action.type: ${action.type}`);
-        }
-        return {
-            groupName,
-            pdf,
-            restful,
-            redirect,
-            sendEmail,
-            [action.type as any]: {
-                ...object,
-                isChecked: action.checked
-            } 
-        };
-    } else if (action.name === "reset"){
-        return InitGroupData;
-    } else if(action.name === "text"){
-        const { value } = action;
-        switch(action.type) {
-            case "groupName": 
-                object = { [action.type]: value };
-                break;
-            case "fileName":
-            case "filePath":
-                object = { pdf: { ...pdf, [action.type]: value }};
-                break;
-            case "email":
-            case "password":
-            case "mailTitle":
-            case "mailContent":
-                object = { sendEmail: { ...sendEmail, [action.type]: value}};
-                break;
-            case "data":
-                object = { restful: {...restful, [action.type]: value }};
-                break;
-            case "port":
-            case "ipAddress":
-                object = { redirect: { ...redirect, [action.type]: value }};
-                break;
-            default: throw new Error(`unexpected action.type: ${action.type}`);
-        }
-        return {
-            groupName,
-            pdf,
-            sendEmail,
-            restful,
-            redirect,
-            ...object
-        };
-    } else if(action.name === "resetTmp") {
-        const { tmpValue } = action;
-        if(tmpValue) {
-            return tmpValue;
+const useStartGrouping = (data2: string) => {
+    const handleCompleted = (data: StartForGroupingMutationResponse) => {
+        const { StartForGrouping: {error, group, ok} } = data;
+        if(ok) {
+            // Completed!
+            console.log("useStatrGrouping - handleCompleted: ", group);
+            
         } else {
-            throw Error("Not Found resetTmp Data");
-        }
-        
-    } else { // Restful checkbox
-        const { restful } = formGrouping;
-        const { type, checked } = action;
-        return {
-            ...formGrouping,
-            restful: {
-                ...restful,
-                [type as any]: checked
-            }
+            // Error!
         }
     }
-}
-const useStartGrouping = () => {
-    const [ mutationStartForGrouping ] = useMutation<StartForGroupingMutationResponse, StartForGroupingMutationVariables>(START_FOR_GROUPING,
+    const [ mutationStartForGrouping, { loading, client } ] = useMutation<StartForGroupingMutationResponse, StartForGroupingMutationVariables>(START_FOR_GROUPING,
         {
-            onCompleted: data => {
-                console.log("Start For Grouping Success! ", data);
-            },
+            onCompleted: handleCompleted,
             onError:data => {
                 console.log("Start For Grouping Error! ", data);
-            }
-        })
+            },
+        });
+        console.log("################## client: ", client)
     return {
         mutationStartForGrouping
     }
 }
+const useInput = () => {
+    const [value, setValue] = useState<boolean>(false);
+    const onInit = () => {
+        setValue(false);
+    }
+    const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        const { target: { checked }} = event;
+        setValue(checked);
+    }
+    return {
+        value,
+        onInit,
+        onChange
+    };
+}
+
 const useHomeFetch = () => {
+    const formGroupReducer: React.Reducer<Grouping, {name: string, type?: string, checked?: boolean, value?: string, tmpValue?: Grouping}> = useCallback(((state, action) => {
+        const formGrouping = state;
+        const { groupName, pdf, sendEmail, redirect, restful } = formGrouping;
+        var object = {};
+        if(action.name === "checkbox") {
+            switch(action.type) {
+                case "pdf":
+                    object = pdf;
+                    break;
+                case "sendEmail":
+                    object = sendEmail
+                    break;
+                case "restful":
+                    object = restful;
+                    break;
+                case "redirect":
+                    object = redirect;
+                    break;
+                default: throw new Error(`unexpected action.type: ${action.type}`);
+            }
+            return {
+                groupName,
+                pdf,
+                restful,
+                redirect,
+                sendEmail,
+                [action.type as any]: {
+                    ...object,
+                    isChecked: action.checked
+                } 
+            };
+        } else if (action.name === "reset"){
+            return InitGroupData;
+        } else if(action.name === "text"){
+            const { value } = action;
+            switch(action.type) {
+                case "groupName": 
+                    object = { [action.type]: value };
+                    break;
+                case "fileName":
+                case "filePath":
+                    object = { pdf: { ...pdf, [action.type]: value }};
+                    break;
+                case "email":
+                case "password":
+                case "mailTitle":
+                case "mailContent":
+                case "destinationEmails":
+                    object = { sendEmail: { ...sendEmail, [action.type]: value}};
+                    break;
+                case "data":
+                    object = { restful: {...restful, [action.type]: value }};
+                    break;
+                case "port":
+                case "ipAddress":
+                    object = { redirect: { ...redirect, [action.type]: value }};
+                    break;
+                default: throw new Error(`unexpected action.type: ${action.type}`);
+            }
+            return {
+                groupName,
+                pdf,
+                sendEmail,
+                restful,
+                redirect,
+                ...object
+            };
+        } else if(action.name === "resetTmp") {
+            const { tmpValue } = action;
+            if(tmpValue) {
+                return tmpValue;
+            } else {
+                throw Error("Not Found resetTmp Data");
+            }
+            
+        } else { // Restful checkbox
+            const { restful } = formGrouping;
+            const { type, checked } = action;
+            return {
+                ...formGrouping,
+                restful: {
+                    ...restful,
+                    [type as any]: checked
+                }
+            }
+        }
+    }), []);
+
     const [ isDetails, setIsDetails ] = useState<boolean>(false);
     const [ exeLoading, setExeLoading ] = useState<boolean>(false);
     const [ isCreateGroup, setIsCreateGroup ] = useState<boolean>(false);
@@ -206,6 +236,7 @@ const useHomeFetch = () => {
     const [ currentStep, setCurrentStep ] = useState<number>(0);
     const [ errorLoading, setErrorLoading] = useState<boolean>(false);
     const [ selectedCardIndex, setSelectedCardIndex ] = useState(-1);
+    const isRestfulFunc = useInput();
 
     let timer;
 
@@ -292,7 +323,7 @@ const useHomeFetch = () => {
         const { target: { checked, name }} = event;
         dispatchCreateGrouping({ name:"checkbox", type: name, checked });
     }
-    const handleTextChangeFormGrouping: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    const handleTextChangeFormGrouping: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
         const { target: { name, value }} = event;
         dispatchCreateGrouping({ name: "text", type: name, value });
     }
@@ -305,7 +336,7 @@ const useHomeFetch = () => {
         const { target: { checked, name }} = event;
         dispatchTmpGrouping({ name:"checkbox", type: name, checked });
     }
-    const handleTextChangeTmpGrouping: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    const handleTextChangeTmpGrouping: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
         const { target: { name, value }} = event;
         dispatchTmpGrouping({ name: "text", type: name, value });
     }
@@ -351,7 +382,8 @@ const useHomeFetch = () => {
         handleChangeTmpGrouping,
         handleTextChangeTmpGrouping,
         handleChangeTmpRestfulCheckbox,
-        onExeLoading
+        onExeLoading,
+        isRestfulFunc
     };
 }
 interface IProps {

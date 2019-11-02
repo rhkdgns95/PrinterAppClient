@@ -25,6 +25,7 @@ const InitGroupList: Grouping = {
         isChecked: false,
         email: "",
         password: "",
+        destinationEmails: "",
         mailTitle: "",
         mailContent: ""
     },
@@ -37,7 +38,7 @@ const InitGroupList: Grouping = {
 
 const useFetch = (data: Grouping) => {
     const [ loading, setLoading ] = useState(true);
-    const [ groupList, setGroupList ] = useState([InitGroupList]);
+    const [ groupList, setGroupList ] = useState<Array<Grouping>>([InitGroupList]);
     
     useEffect(() => {
         setGroupList([data]);
@@ -74,7 +75,6 @@ const AvailableGroupName = (newGroupName: Grouping, groups: GetAllGrouping | nul
             return true;
         } else {
             const findData = groupList.find(group => group.groupName === newGroupName.groupName);
-            console.log("findData: ", findData);
             if(findData) {
                 return false;
             } else {
@@ -85,6 +85,11 @@ const AvailableGroupName = (newGroupName: Grouping, groups: GetAllGrouping | nul
     } else {
         return true;
     }
+}
+const GetRestfulData = (data: string) => {
+    return `function tmp() { 
+        ${data} 
+    }`;
 }
 //RouteProps
 interface IProps extends RouteComponentProps<any>{
@@ -97,21 +102,22 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
         history.push("/");
     }
     const { cache } = useApolloClient();
-    const getGroupList: GetAllGrouping | null = useGetAllGrouping(cache); 
+    console.log("HOME CONTAINER: ", cache);
+    const getGroupList: GetAllGrouping | null = useGetAllGrouping(cache);
     
     
     console.log("AllGrouping: ", getGroupList);
 
     // var initGroupList: Grouping = JSON.parse(groups.groupList) === "" ? InitGroupList : groups.groupList;
     const { loading, groupList } = useFetch(InitGroupList);
-    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping, onExeLoading, exeLoading } = useHomeContext();
+    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping, onExeLoading, exeLoading, isRestfulFunc } = useHomeContext();
     const { data: tmpData, mutationCreateGrouping } = useCreateGrouping();
     const { mutationUpdateGrouping } = useUpdateGrouping();
     const { mutationDeleteGrouping } = useDeleteGrouping();
-    const { mutationStartForGrouping } = useStartGrouping(); 
+    const data = "HELLO!!!";
+    const { mutationStartForGrouping } = useStartGrouping(data); 
 
     const selectedGroupData: Grouping | {} = useGetGrouping(selectedCardIndex);
-    console.log("SELECTED_GROUPING: ", selectedGroupData);
     
     const handleStartForGrouping = () => {
         if(exeLoading) {
@@ -120,13 +126,13 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
         }
         onExeLoading();
         setTimeout(() => {
+            console.log("CURRENT KEY= ",selectedCardIndex);
             mutationStartForGrouping({
                 variables: {
                     groupId: parseInt(selectedCardIndex)
                 }
             });
         }, 1500);
-        
     }
     const handleDeleteGroup = ({ groupName }) => {
         if(exeLoading) {
@@ -159,7 +165,7 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
     const handleCreateGroup = (currentStep, newGrouping: Grouping) => {
         const isVerifyFormStep = VerifyCreateGroup(currentStep, newGrouping);
         const isAvailableGroupName =  AvailableGroupName(newGrouping, getGroupList);
-
+        
         if(isVerifyFormStep) {
             const { groupName } = newGrouping;
             if(isAvailableGroupName) {
@@ -169,11 +175,17 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
                 }
                 onExeLoading();
                 setTimeout(() => {
+                    // restful의 data를 함수출력으로 변경.
+                    if(isRestfulFunc.value) {
+                        newGrouping.restful.data = GetRestfulData(newGrouping.restful.data);
+                        isRestfulFunc.onInit();
+                    }
                     mutationCreateGrouping({
                         variables: {
                             ...newGrouping
                         }
                     });
+                    
                     toast.info(`Create new group '${groupName}'`);
                     resetFormCreateGrouping();
                     toggleCreateModal();

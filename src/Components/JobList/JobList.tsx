@@ -5,6 +5,7 @@ const Container = styled.div`
     position: relative;
     margin-bottom: 35px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.24), 0 4px 6px rgba(0,0,0,.32);
+    
     &:not(:nth-last-of-type(1)) {
         &::after {
             content: "";

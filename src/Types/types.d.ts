@@ -10,9 +10,10 @@ type T_pdf = {
 type T_sendemail = {
     isChecked: boolean,
     email: string,
+    destinationEmails: string;
     password: string,
     mailTitle: string,
-    mailContent: string
+    mailContent: string,
 };
 type T_restful = {
     isChecked: boolean,

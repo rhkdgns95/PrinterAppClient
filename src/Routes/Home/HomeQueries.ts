@@ -14,6 +14,7 @@ export const GET_ALL_GROUPING = gql`
                     isChecked
                     email
                     password
+                    destinationEmails
                     mailTitle
                     mailContent
                 }
@@ -44,6 +45,7 @@ export const GET_GROUPING = gql`
             sendEmail {
                 isChecked
                 email
+                destinationEmails
                 password
                 mailTitle
                 mailContent
@@ -120,6 +122,7 @@ export const START_FOR_GROUPING = gql`
                     isChecked
                     email
                     password
+                    destinationEmails
                     mailTitle
                     mailContent
                 }

@@ -23,7 +23,8 @@ const CreateGroupModalContainer: React.FC<IProps> = ({
         resetFormCreateGrouping,
         onNextStep,
         onPreviousStep,
-        currentStep
+        currentStep,
+        isRestfulFunc
     } = useHomeContext();
     // Simple Result
     // const value = useHomeContext(); 
@@ -43,6 +44,7 @@ const CreateGroupModalContainer: React.FC<IProps> = ({
         onPreviousStep={onPreviousStep}
         currentStep={currentStep}
         handleCreateGroup={handleCreateGroup}
+        isRestfulFunc={isRestfulFunc}
         />;
 };
 
