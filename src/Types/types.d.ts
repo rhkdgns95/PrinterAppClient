@@ -34,3 +34,10 @@ export type Grouping = {
     restful: T_restful,
     redirect: T_redirect
 };
+
+// Context
+interface IMainContext {
+    loading: boolean;
+    step: number;
+    onStep: (newStep: number) => any;
+}

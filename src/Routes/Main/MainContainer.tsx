@@ -1,26 +1,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import MainPresenter from "./MainPresenter";
-const LOAIDNG_TIME = 1000;
+import { useMainContext, MainProvider } from "./MainProvider";
 
-const useFetch = () => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const MainLoading = () => {
-        setLoading(false);
-        // File 가져오기.
-
-    };
-    
-    setTimeout(MainLoading, LOAIDNG_TIME);
-
-    return {
-        loading
-    };
+const MainContainer = () => {
+    const { loading, onStep, step } = useMainContext();
+    return (
+        <MainPresenter 
+            loading={loading} 
+            onStep={onStep} 
+            step={step}
+        />
+    )
 }
 const Main = () => {
-    const { loading } = useFetch();
-    
     return (
-        <MainPresenter loading={loading}/>
+        <MainProvider>
+            <MainContainer/>
+        </MainProvider>
     );
 };
 
