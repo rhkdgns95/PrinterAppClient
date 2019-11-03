@@ -9,7 +9,6 @@ const Container = styled.div`
     position: relative;
     width: 100%;
     height: 100vh;
-    border: 1px solid red;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,7 +98,7 @@ const SlideScreen = styled.div<ISlideScreen>`
     align-items: center;
     flex-flow: row;
     transition: .5s;
-    transition-delay: .1s;
+    // transition-delay: .1s;
     transition-timing-function: ease-in-out;
     & > div {
         flex: 1;
@@ -115,7 +114,7 @@ const SlideScreen = styled.div<ISlideScreen>`
 `;
 const Screen = styled.div`
     position: relative;
-    background: linear-gradient(180deg,rgba(81,102,100,.1) 0%,rgba(13,37,34,.5) 100%);
+    // background: linear-gradient(180deg,rgba(81,102,100,.1) 0%,rgba(13,37,34,.5) 100%);
     height: 100%;
     & > div {
         opacity: 0;
@@ -133,14 +132,7 @@ const Screen = styled.div`
         }
     }
 `;
-const MainView = styled.div`
-    width: 50%;
-    height: 100%;
-    border: 1px solid green;
-    // background: linear-gradient(180deg, rgba(81,102,100,1) 0%, rgba(13,37,34,1) 100%);
-    // background: #1e3f49;
-    background: linear-gradient(180deg,rgba(81,102,100,.1) 0%,rgba(13,37,34,.5) 100%);
-`;
+
 const GoBtn = styled.button`
     position: absolute;
     top: 10px

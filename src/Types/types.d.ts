@@ -40,4 +40,6 @@ interface IMainContext {
     loading: boolean;
     step: number;
     onStep: (newStep: number) => any;
+    isDetails: boolean;
+    onToggleDetails: () => any;
 }
