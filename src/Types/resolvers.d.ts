@@ -6,7 +6,8 @@ type groups = {
 type StartForGrouping = {
     ok: boolean;
     error: string | null;
-    group: Grouping | null;
+    grouping: Grouping | null;
+    message: string | null;
 }
 export interface GetAllGrouping {
     groups: groups;
@@ -20,8 +21,11 @@ export interface GetGroupingResponse {
 export interface UpdateGroupingVariables {
     updatedGroup: Grouping;
 }
+interface UpdateGrouping {
+    groupName: string;
+}
 export interface UpdateGroupingResponse {
-    UpdateGrouping: Grouping;
+    UpdateGrouping: UpdateGrouping
 }
 export interface DeleteGroupingMutationVariables {
     groupName: string;
@@ -38,3 +42,6 @@ export interface StartForGroupingMutationVariables {
 export interface StartForGroupingMutationResponse {
     StartForGrouping: StartForGrouping
 }
+export interface DeleteResultMutationVariables {
+    index: number
+};

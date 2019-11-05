@@ -2,8 +2,9 @@
 import { ApolloClient } from "apollo-client";
 import { ApolloLink, concat, Operation, split } from "apollo-link";
 import { InMemoryCache, HttpLink } from "apollo-boost";
-import { Grouping } from "./Types/types";
+import { Grouping, GroupResult } from "./Types/types";
 import { createHttpLink } from "apollo-link-http";
+import { ApolloCache } from "apollo-cache";
 
 // function getGroupList() {
 //     return JSON.stringify(localStorage.getItem("X-GROUPING"));
@@ -11,9 +12,9 @@ import { createHttpLink } from "apollo-link-http";
 
 const httpLink = new HttpLink({ uri: "http://localhost:4000/appGraphql"});
 const middlewareLink = new ApolloLink((operation: Operation, forward: any) => {
-    console.log("MiddleWares: ", JSON.stringify(localStorage.getItem('X-GROUPING')) || "");
+    // console.log("MiddleWares: ", JSON.stringify(localStorage.getItem('X-GROUPING')) || "");
     const token = localStorage.getItem('X-GROUPING');
-    console.log("TOKEN: ", token);
+    // console.log("TOKEN: ", token);
     operation.setContext({
         headers: {
             "X-GROUPING": token
@@ -35,12 +36,24 @@ const getCacheData = () => {
         return null;
     } 
 }
+const getCacheResultData = () => {
+    try {
+        const allResult = JSON.parse(localStorage.getItem("X-RESULT") || "");
+        return allResult; 
+    } catch(error) {
+        return null;
+    }
+}
 
 cache.writeData({
     data: {
         groups: {
             __typename: "Groups",
             groupList: getCacheData()    
+        },
+        result: {
+            __typename: "Result",
+            resultList: getCacheResultData()
         }
     }
 });
@@ -71,10 +84,10 @@ export const client = new ApolloClient({
                  
                 const x_grouping = localStorage.getItem("X-GROUPING") || "";
                 if(x_grouping === "") { // 없는 데이터
-                    console.log("x_grouping 데이터 존재하지 않음!");
+                    // console.log("x_grouping 데이터 존재하지 않음!");
                 } else { // 데이터가 존재하는경우,
-                    console.log("x_grouping 데이터 존재!");
-                    console.log("Input Data: ", data);
+                    // console.log("x_grouping 데이터 존재!");
+                    // console.log("Input Data: ", data);
                     const groupList: Array<any> = JSON.parse(x_grouping);
                     const { groupName, pdf, redirect, restful, sendEmail } = data;
                     const definedData = {
@@ -161,7 +174,9 @@ export const client = new ApolloClient({
                             }
                         }
                     });
-                    return groupName;
+                    return {
+                        groupName
+                    };
                 }
             },
             DeleteGrouping: (_, { groupName }, { cache }) => {
@@ -183,6 +198,59 @@ export const client = new ApolloClient({
                         };
                     }
                 } 
+                return null;
+            },
+            CreateResult: (_, result: GroupResult, { cache }) => {
+                const { isPdf, isSendEmail, isRedirect, isRestful, message, date } = result;
+                const newResult = {
+                    __typename: "Result",
+                    isPdf,
+                    isSendEmail,
+                    isRedirect,
+                    isRestful,
+                    message,
+                    date
+                };
+                
+                const strResults = localStorage.getItem("X-RESULT") || "";
+                const strGroupList = localStorage.getItem("X-GROUPING") || "";
+                let newResults: Array<any> = [];
+                let newGroupList: Array<any> = [];
+
+                if(strResults !== "") {
+                    newResults = JSON.parse(strResults);
+                } 
+                if(strGroupList !== "") {
+                    newGroupList = JSON.parse(strGroupList);
+                }
+                newResults.push(newResult);
+                localStorage.setItem("X-RESULT", JSON.stringify(newResults || ""));
+                cache.writeData({
+                    data: {
+                        result: {
+                            __typename: "Result",
+                            resultList: [...newResults]
+                        }
+                    }
+                });
+                
+                return null;
+            },
+            DeleteResult: (_, { index }, { cache }) => {
+                const strResults = localStorage.getItem("X-RESULT") || ""
+                if(strResults !== "") {
+                    const results: Array<any> = JSON.parse(strResults);
+                    const newResults: Array<any> = results.filter((_, key) => index !== key);
+                    localStorage.setItem("X-RESULT", JSON.stringify(newResults));
+                    cache.writeData({
+                        data: {
+                            result: {
+                                __typename: "Result",
+                                resultList: [...newResults]
+                            }
+                        }
+                    });
+                }
                 return null;
             }
         }

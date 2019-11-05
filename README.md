@@ -53,7 +53,9 @@
 - 둘째, 데이터를 통일되게 사용하기 위해서 useHomeFetch가 아닌, useHomeContext를 통해서 데이터에 접근하도록 한다.
 - 셋째, 둘째에서 접근하기 위한 데이터는 ProvideHome인 컨텍스트에 value값을 넣어야한다. 이 value는 useHomeFetch()로 데이터를 가져와야하며, 부모, 자식 등 다른 ProvideHome으로 감싸져 있는 각기 다른 컴포넌트에서는 useContext를 리턴하는 useHomeContext를 통해서 독립적인 데이터를 가져오도록 한다.
 
-
+## 4. localStorage
+- localStorage에 여러 데이터를 저장한다. 이때 가져올때도 이전 데이터에 추가하기 위해서 리스트를 가져올것이다. 이때 localStorage.getItem()을 통해 먼저 값이있는지 확인한다음에 JSON.parse()를 사용해서 파싱하도록 한다.
+- 1. JSON.parse(localStorage.getItem()); 처럼 한번에 사용하면, localStorage.getItem()에 값이 없는경우 에러가 되므로 주의하도록 한다.
 
 
 ## 삭제예정

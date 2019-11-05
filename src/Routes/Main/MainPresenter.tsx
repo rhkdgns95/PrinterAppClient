@@ -135,28 +135,31 @@ const Screen = styled.div`
 
 const GoBtn = styled.button`
     position: absolute;
-    top: 10px
-    left: 10px;
+    bottom: 10px
+    left: 135px;
     cursor: pointer;
     padding: 10px;
-    background-color: #00c0ff;
-    color: white;
+    color: #61f8ff;
     border: none;
+    background-color: inherit;
+    transition: .3s;
     &:active,
-    &:focus {
+    &:focus { 
         border: none;
         outline: none;
     }
+    &:hover {
+        color: white;
+    }
 `;
 const GoRecordBtn = styled(GoBtn)`
+    
 
 `;
 const GoListBtn = styled(GoBtn)`
     left: auto;
-    right: 10px;
+    right: 158px;
 `;
-
-
 
 
 {/* <Light>
@@ -188,17 +191,17 @@ const MainPresenter: React.FC<IProps> = ({
                         {/* 1. 해야할 리스트를 보여주는 ListBox. */}
                         {/* 2. 최근 실행항목 확인하기. */}
                         <SlideScreen step={step}>
-                            <Intro />
+                            <Intro step={0}/>
                             <Screen className={"screen"}>
                                 <ListBox/>
                                 <RecordBox />
                             </Screen>
-                            <Intro />
+                            <Intro step={1}/>
                             {
-                                step === 0 && <GoRecordBtn onClick={e => onStep(1)}>Records</GoRecordBtn>
+                                step === 0 && <GoRecordBtn onClick={e => onStep(1)}>Recent results</GoRecordBtn>
                             }
                             {
-                                step === 1 && <GoListBtn onClick={e => onStep(0)}>Lists</GoListBtn>
+                                step === 1 && <GoListBtn onClick={e => onStep(0)}>Main</GoListBtn>
                             }
                             
                         </SlideScreen>

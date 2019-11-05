@@ -11,6 +11,7 @@ const Title = styled.h3`
     text-shadow: 0 1px 2px rgba(0,0,0,.12);
     margin-top: 40px;
     margin-bottom: 50px;
+    color: #2d72dd;
 `;
 const RecordBox: React.FC<any> = ({
 }) => {

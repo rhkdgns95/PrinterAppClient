@@ -1,6 +1,6 @@
 import React, { useContext, useState, useReducer, useCallback } from "react";
 import { useMutation, useQuery } from "react-apollo";
-import { CREATE_GROUPING, GET_ALL_GROUPING, GET_GROUPING, UPDATE_GROUPING, DELETE_GROUPING, START_FOR_GROUPING } from "./HomeQueries";
+import { CREATE_GROUPING, GET_ALL_GROUPING, GET_GROUPING, UPDATE_GROUPING, DELETE_GROUPING, START_FOR_GROUPING, CREATE_RESULT } from "./HomeQueries";
 import { Grouping } from "../../Types/types";
 import { RouteProps, RouteComponentProps } from "react-router";
 import { toast } from "react-toastify";
@@ -47,6 +47,10 @@ const useCreateGrouping = () => {
 }
 const useUpdateGrouping = () => {
     const [ mutationUpdateGrouping ] = useMutation<UpdateGroupingResponse, UpdateGroupingVariables>(UPDATE_GROUPING, {
+        onCompleted:data => {
+            const { UpdateGrouping: { groupName }} = data;
+            toast.info(`Updated Success: '${ groupName }'.`);
+        },
         onError:data => {
             console.log("useUpdateGrouping Error: ", data);
         }
@@ -59,7 +63,7 @@ const useDeleteGrouping = () => {
     const [ mutationDeleteGrouping ] = useMutation<DeleteGroupingResponse, DeleteGroupingMutationVariables>(DELETE_GROUPING, {
         onCompleted: data => {
             const { groupName } = data.DeleteGrouping;
-            toast.success(`Group name '${groupName}' Deleted.`);
+            toast.success(`Deleted Success: '${groupName}'.`);
         },
         onError: data => {
             console.log("useDeleteGrouping Error: ", data);
@@ -96,28 +100,54 @@ const InitGroupData: Grouping = {
         port: ""
     }
 }
+const useCreateResult = () => {
+    const [ mutationCreateResult ] = useMutation(CREATE_RESULT, {
+        onCompleted: data => {
+            toast.success("Success");
+        },
+        onError: data => {
+            toast.error("Failed");
+            console.log("ERROR: ", data);
+        }
+    });
+    return {
+        mutationCreateResult
+    };
+};
 
-const useStartGrouping = (data2: string) => {
+const useStartGrouping = (mutationCreateResult: any) => {
     const handleCompleted = (data: StartForGroupingMutationResponse) => {
-        const { StartForGrouping: {error, group, ok} } = data;
-        if(ok) {
+        const { StartForGrouping: {error, grouping, ok, message} } = data;
+        
+        if(ok && grouping) {
             // Completed!
-            console.log("useStatrGrouping - handleCompleted: ", group);
-            
+            // console.log("useStatrGrouping - handleCompleted: ", grouping , message);
+            const { pdf, sendEmail, restful, redirect } = grouping;
+            mutationCreateResult({
+                variables: {
+                    isPdf: pdf.isChecked,
+                    isSendEmail: sendEmail.isChecked,
+                    isRedirect: redirect.isChecked,
+                    isRestful: restful.isChecked,
+                    message,
+                    date: new Date().getTime() + ""
+                }
+            });
         } else {
             // Error!
         }
     }
-    const [ mutationStartForGrouping, { loading, client } ] = useMutation<StartForGroupingMutationResponse, StartForGroupingMutationVariables>(START_FOR_GROUPING,
+    const [ mutationStartForGrouping, { loading,data: startForGroupingData, client } ] = useMutation<StartForGroupingMutationResponse, StartForGroupingMutationVariables>(START_FOR_GROUPING,
         {
             onCompleted: handleCompleted,
             onError:data => {
                 console.log("Start For Grouping Error! ", data);
             },
-        });
-        console.log("################## client: ", client)
+        }
+    );
     return {
-        mutationStartForGrouping
+        mutationStartForGrouping,
+        startForGroupingData
     }
 }
 const useInput = () => {
@@ -242,16 +272,13 @@ const useHomeFetch = () => {
 
     const onErrorLoading = () => {
         // setErrorLoading(true);
-        console.log("On Error loading!");
-        console.log("error loading: ", errorLoading);
         if(!errorLoading) {
             setErrorLoading(true);
             setTimeout(() => {
-                console.log("SetTime Out!");
                 setErrorLoading(false);
             }, 1500);
         } else { // errror Loading이 이미 실행중인경우.
-            console.log("TImer: ", timer);
+            // console.log("TImer: ", timer);
             // clearTimeout(timer);
             // setErrorLoading(false);
             // setErrorLoadi ng(true);
@@ -278,10 +305,12 @@ const useHomeFetch = () => {
         setIsDetails(!isDetails);
     }
     const toggleIsUpdate = (currentUpdated?: boolean) => {
-        if(currentUpdated !== undefined) {
+        if(currentUpdated && currentUpdated) {
             setIsUpdate(currentUpdated);
-        } else {
+        } else if(currentUpdated === undefined) {
             setIsUpdate(!isUpdate);
+        } else {
+            return;
         }
     }
     const onNextStep = () => {
@@ -393,7 +422,6 @@ const ProvideHome: React.FC<IProps> = ({
     children
 }) => {
     const value = useHomeFetch();
-    console.log("location");
     return (
         <HomeContext.Provider value={{...value}}>
             {
@@ -402,4 +430,4 @@ const ProvideHome: React.FC<IProps> = ({
         </HomeContext.Provider>
     )
 }
-export { useHomeContext, useCreateGrouping, ProvideHome, useHomeFetch, useGetAllGrouping, useGetGrouping, useUpdateGrouping, useDeleteGrouping, useStartGrouping };
+export { useHomeContext, useCreateGrouping, ProvideHome, useHomeFetch, useGetAllGrouping, useGetGrouping, useUpdateGrouping, useDeleteGrouping, useStartGrouping, useCreateResult };

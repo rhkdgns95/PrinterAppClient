@@ -2,11 +2,12 @@ import React, { useState, useEffect, ComponentProps } from "react";
 import { withApollo, WithApolloClient, useApolloClient } from "react-apollo";
 import HomePresenter from "./HomePresenter";
 import { Grouping } from "../../Types/types";
-import { useCreateGrouping, useGetAllGrouping, useHomeContext, useGetGrouping, useUpdateGrouping, useDeleteGrouping, useStartGrouping } from "./HomeProvider";
+import { useCreateGrouping, useGetAllGrouping, useHomeContext, useGetGrouping, useUpdateGrouping, useDeleteGrouping, useStartGrouping, useCreateResult } from "./HomeProvider";
 import CreateGroupModal from "../../Components/CreateGroupModal";
 import { toast } from "react-toastify";
 import { GetAllGrouping } from "../../Types/resolvers";
 import { RouteProps, RouteComponentProps, RouterProps } from "react-router";
+import { nullGrouping } from "../../Utils/nullGrouping";
 
 const InitGroupList: Grouping = {
     groupName: "",
@@ -64,7 +65,7 @@ const VerifyCreateGroup = (currentStep: number, group: Grouping) => {
 
     // Check [1,2,3]
     const isVerifiedForm: boolean = currentStep === 2 && 
-        groupName !== "" && ( !pdf.isChecked || !sendEmail.isChecked || !redirect.isChecked || !restful.isChecked)
+        groupName !== "" && ( pdf.isChecked || sendEmail.isChecked || redirect.isChecked || restful.isChecked)
 
     return isVerifiedForm;
 }
@@ -91,6 +92,7 @@ const GetRestfulData = (data: string) => {
         ${data} 
     }`;
 }
+
 //RouteProps
 interface IProps extends RouteComponentProps<any>{
 
@@ -102,22 +104,16 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
         history.push("/");
     }
     const { cache } = useApolloClient();
-    console.log("HOME CONTAINER: ", cache);
     const getGroupList: GetAllGrouping | null = useGetAllGrouping(cache);
     
-    
-    console.log("AllGrouping: ", getGroupList);
-
     // var initGroupList: Grouping = JSON.parse(groups.groupList) === "" ? InitGroupList : groups.groupList;
     const { loading, groupList } = useFetch(InitGroupList);
-    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping, onExeLoading, exeLoading, isRestfulFunc } = useHomeContext();
+    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping, onExeLoading, exeLoading, isRestfulFunc, toggleIsUpdate } = useHomeContext();
     const { data: tmpData, mutationCreateGrouping } = useCreateGrouping();
     const { mutationUpdateGrouping } = useUpdateGrouping();
     const { mutationDeleteGrouping } = useDeleteGrouping();
-    const data = "HELLO!!!";
-    const { mutationStartForGrouping } = useStartGrouping(data); 
-
-    const selectedGroupData: Grouping | {} = useGetGrouping(selectedCardIndex);
+    const { mutationCreateResult } = useCreateResult();
+    const { mutationStartForGrouping, startForGroupingData } = useStartGrouping(mutationCreateResult); 
     
     const handleStartForGrouping = () => {
         if(exeLoading) {
@@ -126,7 +122,6 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
         }
         onExeLoading();
         setTimeout(() => {
-            console.log("CURRENT KEY= ",selectedCardIndex);
             mutationStartForGrouping({
                 variables: {
                     groupId: parseInt(selectedCardIndex)
@@ -149,22 +144,33 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
         }, 1500);
     }
     const handleUpdateGroup = (updatedGroup: Grouping) => {
+        const {pdf: {isChecked: pdfChecked}, sendEmail: {isChecked: sendEmailChecked}, redirect: {isChecked: redirectChecked}, restful: {isChecked: restfulChecked}} = updatedGroup;
+        const noChecked: boolean = !pdfChecked && !sendEmailChecked && !redirectChecked && !restfulChecked;
+        if(noChecked) {
+            onErrorLoading();
+            toggleIsUpdate(false);
+            toast.error("Update Error: Please select at least one task");
+            return;
+        }
         if(exeLoading) {
-            alert("실행중입니다.");
+            toast.warn("Waring: Already running.");
             return;
         }
         onExeLoading();
         setTimeout(() => {
+            let nullUpdatedGroup: Grouping = nullGrouping(updatedGroup);
+            handleSelectedGrouping(nullUpdatedGroup);
+            toggleIsUpdate();
             mutationUpdateGrouping({
                 variables: {
-                    updatedGroup
+                    updatedGroup: nullUpdatedGroup
                 }
             });
         }, 1500);
     }
     const handleCreateGroup = (currentStep, newGrouping: Grouping) => {
-        const isVerifyFormStep = VerifyCreateGroup(currentStep, newGrouping);
-        const isAvailableGroupName =  AvailableGroupName(newGrouping, getGroupList);
+        const isVerifyFormStep: boolean = VerifyCreateGroup(currentStep, newGrouping);
+        const isAvailableGroupName: boolean =  AvailableGroupName(newGrouping, getGroupList);
         
         if(isVerifyFormStep) {
             const { groupName } = newGrouping;
@@ -180,29 +186,31 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
                         newGrouping.restful.data = GetRestfulData(newGrouping.restful.data);
                         isRestfulFunc.onInit();
                     }
+                    
+                    // isChecked가 false인데도 값이 들어가있는경우는 빈값을 넣어두도록 한다.
+                    const nullNewGrouping: Grouping = nullGrouping(newGrouping);
+                    
                     mutationCreateGrouping({
                         variables: {
-                            ...newGrouping
+                            ...nullNewGrouping
                         }
                     });
                     
-                    toast.info(`Create new group '${groupName}'`);
+                    toast.info(`Success: Create new group '${groupName}'`);
                     resetFormCreateGrouping();
                     toggleCreateModal();
                 }, 1500);
                 
             } else {
                 onErrorLoading();
-                toast.error("Duplicate group names cannot be used.")
+                toast.error("Error: Duplicate group names cannot be used.")
             }
         } else {
             onErrorLoading();
-            toast.error("Not Found.")
+            toast.error("Error: Not Found.")
         }
-        
     }
     
-    console.log("HomeData: ", groupList);
     return (
             <React.Fragment>
                 <HomePresenter 

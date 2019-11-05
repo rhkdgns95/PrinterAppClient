@@ -34,6 +34,16 @@ export type Grouping = {
     restful: T_restful,
     redirect: T_redirect
 };
+// Result
+
+export type GroupResult = {
+    isPdf: boolean;
+    isSendEmail: boolean;
+    isRestful: boolean;
+    isRedirect: boolean;
+    message: string;
+    date: string;
+}
 
 // Context
 interface IMainContext {
@@ -42,4 +52,5 @@ interface IMainContext {
     onStep: (newStep: number) => any;
     isDetails: boolean;
     onToggleDetails: () => any;
+    mutationDeleteResult: ({variables: {index: number}}) => any;
 }

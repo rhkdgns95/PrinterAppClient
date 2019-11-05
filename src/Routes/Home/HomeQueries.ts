@@ -138,6 +138,27 @@ export const START_FOR_GROUPING = gql`
                     port
                 }
             }
+            message
         }
+    }
+`;
+
+export const CREATE_RESULT = gql`
+    mutation createResult(
+        $isPdf: Boolean!
+        $idSendEmail: Boolean!
+        $isRedirect: Boolean!
+        $isRestful: Boolean!
+        $message: String!
+        $date: String!
+    ) {
+        CreateResult(
+            isPdf: $isPdf
+            isSendEmail: $isSendEmail
+            isRedirect: $isRedirect
+            isRestful: $isRestful
+            message: $message
+            date: $date
+        ) @client
     }
 `;

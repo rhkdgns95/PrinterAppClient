@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "../../Styles/typed-components";
 import ToggleBtn from "../ToggleBtn";
-import { useMainContext } from "../../Routes/Main/MainProvider";
+import { useMainContext, GetAllResult } from "../../Routes/Main/MainProvider";
+import { useApolloClient } from "react-apollo";
+import { useHomeContext } from "../../Routes/Home/HomeProvider";
+import { getTime } from "../../Utils/getTime";
 
 const Container = styled.div`
 
@@ -15,7 +18,7 @@ const TableScroll = styled.div`
     background-color: #e8ebef;
     overflow-x: hidden;
     overflow-y: scroll;
-    max-height: 330px;
+    max-height: 322px;
     box-sizing: content-box;
     padding-right: 8px;
     padding-left: 5px;
@@ -99,6 +102,10 @@ const Tbody = styled.tbody`
                     font-size: 13px;
                     padding: 10px;
                     opacity: 1;
+                    span {
+                        transition: .3s;
+                        font-size: 11px;
+                    }
                 }
             }
             & .details-text {
@@ -122,11 +129,15 @@ const Td = styled.td`
     &.td-msg {
         width: 100%;
         font-size: 0;
+        span {
+            font-size: 0;
+        }
         padding: 0;
         transition: .3s;
         opacity: 0;
     }
     &.job {
+        text-align: left;
         padding-top: 12px;
         span {
             &:not(:nth-of-type(1)) {
@@ -213,178 +224,168 @@ const Text = styled.span`
     font-style: italic;
 `;
 const Msg = styled.span`
-    max-width: 300px;
-    word-break: break-all;
+    max-width: 200px;
+    word-break: break-word;
     white-space: normal;
+    text-align: left;
+    font-size: 11px;
 `;
-interface IRecord {
-    pdf: boolean;
-    sendEmail: boolean;
-    restful: boolean;
-    redirect: boolean;
-    date: string;
-    message: string;
-}
-const Records: Array<IRecord> = [
-    {
-        pdf: true,
-        sendEmail: true,
-        restful: true,
-        redirect: true,
-        date: "2018-10-11",
-        message: "Hello World"
-    },
-    {
-        pdf: false,
-        sendEmail: true,
-        restful: false,
-        redirect: true,
-        date: "2018-06-11",
-        message: "No World"
-    },
-    {
-        pdf: false,
-        sendEmail: true,
-        restful: false,
-        redirect: true,
-        date: "2018-06-11",
-        message: "No World"
-    },
-    {
-        pdf: false,
-        sendEmail: true,
-        restful: false,
-        redirect: true,
-        date: "2018-06-11",
-        message: "No World"
-    },
-    {
-        pdf: false,
-        sendEmail: true,
-        restful: false,
-        redirect: true,
-        date: "2018-06-11",
-        message: "No World"
-    },
-    {
-        pdf: false,
-        sendEmail: true,
-        restful: false,
-        redirect: true,
-        date: "2018-06-11",
-        message: "No World"
-    },
-    {
-        pdf: false,
-        sendEmail: true,
-        restful: false,
-        redirect: true,
-        date: "2018-06-11",
-        message: "No World"
+const Empty = styled.div`
+    display: block;
+    margin: 10px;
+    position: relative;
+    padding: 50px;
+    background-color: white;
+    color: #aeaeae;
+    font-style: italic;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,.24);
+    & svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: .5;
+        fill: #dfdfdf;
     }
-];
+`;
+const EmptyText = styled.span`
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 1px 1px rgba(0,0,0,.1);
+`;
+
+const COLOR_PDF: string = "#009688";
+const COLOR_SEND_EMAIL: string = "#c95d5d"
+const COLOR_RESTFUL: string = "#3f51b5"
+const COLOR_REDIRECT: string = "#bd9210";
 
 const RecordTable = () => {
-    const { isDetails, onToggleDetails } = useMainContext();
-    const pdfColor: string = "#009688";
-    const sendEmailColor: string = "#c95d5d"
-    const restfulColor: string = "#3f51b5"
-    const redirectColor: string = "#bd9210";
+    const { cache } = useApolloClient();
+    const resultList = GetAllResult(cache);
+    const { exeLoading, onExeLoading } = useHomeContext();
+    const { isDetails, onToggleDetails, mutationDeleteResult } = useMainContext();
     
+    const handleMutationDeleteResult = (index: number) => {
+        onExeLoading();
+        setTimeout(() => {
+            mutationDeleteResult({
+                variables: {
+                    index
+                }
+            });
+        }, 1500);
+    };
+
     return (
         <Container>
-            <ExtendedToggleBtn className={"extended-btn"} text={"보기"} onChange={onToggleDetails}/>
-            <Options>
-                <Option>
-                    <svg fill={pdfColor} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M11.363 2c4.155 0 2.637 6 2.637 6s6-1.65 6 2.457v11.543h-16v-20h7.363zm.826-2h-10.189v24h20v-14.386c0-2.391-6.648-9.614-9.811-9.614zm4.811 13h-2.628v3.686h.907v-1.472h1.49v-.732h-1.49v-.698h1.721v-.784zm-4.9 0h-1.599v3.686h1.599c.537 0 .961-.181 1.262-.535.555-.658.587-2.034-.062-2.692-.298-.3-.712-.459-1.2-.459zm-.692.783h.496c.473 0 .802.173.915.644.064.267.077.679-.021.948-.128.351-.381.528-.754.528h-.637v-2.12zm-2.74-.783h-1.668v3.686h.907v-1.277h.761c.619 0 1.064-.277 1.224-.763.095-.291.095-.597 0-.885-.16-.484-.606-.761-1.224-.761zm-.761.732h.546c.235 0 .467.028.576.228.067.123.067.366 0 .489-.109.199-.341.227-.576.227h-.546v-.944z"/></svg>
-                    <OptionText style={{color: pdfColor}}>PDF</OptionText>
-                </Option>
-                <Option>
-                    <svg fill={sendEmailColor} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/></svg>
-                    <OptionText style={{color: sendEmailColor}}>Send Email</OptionText>
-                </Option>
-                <Option>
-                    <svg fill={restfulColor} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M14.666 8.334v3.666l1.463-2.215-1.463-1.451zm-3.092 4.167c.66-.384 1.242-.864 1.758-1.447v1.369c-.445.393-.926.731-1.449 1.018l-.309-.94zm-3.255 2.041c-.652.083-1.57.125-2.319.125v-.97c.688 0 1.551-.037 2.152-.113l.167.958zm2.789-.725l-.036.015c-.586.246-1.22.437-1.91.573l-.167-.958c.655-.131 1.257-.315 1.809-.556l.304.926zm10.892-13.817l-3 11-4.064-3.62 3.9-4.117-5.229 3.614-3.607-.877 12-6zm-3.015 14.779c0 4.546-5.777 9.221-8.221 9.221h-8.764v-22h11.527l-4 2h-5.527v18h5.938c4.155 0 2.638-6 2.638-6 3.349.921 6.003.403 6.003-3.21.28.65.406 1.318.406 1.989z"/></svg>
-                    <OptionText style={{color: restfulColor}}>RESTFul</OptionText>
-                </Option>
-                <Option>
-                    <svg fill={redirectColor} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M20 3c0-1.657-1.344-3-3-3s-3 1.343-3 3c0 .312.061.606.149.889l-4.21 3.157c.473.471.878 1.01 1.201 1.599l4.197-3.148c.477.316 1.048.503 1.663.503 1.656 0 3-1.343 3-3zm-2 0c0 .551-.448 1-1 1s-1-.449-1-1 .448-1 1-1 1 .449 1 1zm3 12.062c1.656 0 3-1.343 3-3s-1.344-3-3-3c-1.281 0-2.367.807-2.797 1.938h-6.283c.047.328.08.66.08 1s-.033.672-.08 1h6.244c.396 1.195 1.509 2.062 2.836 2.062zm-1-3c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.448-1-1zm-20-.062c0 2.761 2.238 5 5 5s5-2.239 5-5-2.238-5-5-5-5 2.239-5 5zm2 0c0-1.654 1.346-3 3-3s3 1.346 3 3-1.346 3-3 3-3-1.346-3-3zm7.939 4.955l4.21 3.157c-.088.282-.149.576-.149.888 0 1.657 1.344 3 3 3s3-1.343 3-3-1.344-3-3-3c-.615 0-1.186.187-1.662.504l-4.197-3.148c-.324.589-.729 1.127-1.202 1.599zm6.061 4.045c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.449-1-1z"/></svg>
-                    <OptionText style={{color: redirectColor}}>Redirect</OptionText>
-                </Option>
-            </Options>
-            <RecoredBox>
-
-            </RecoredBox>
+            {
+                resultList && (
+                    <>
+                        <ExtendedToggleBtn className={"extended-btn"} text={"보기"} onChange={onToggleDetails}/>
+                        <Options>
+                            <Option>
+                                <svg fill={COLOR_PDF} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M11.363 2c4.155 0 2.637 6 2.637 6s6-1.65 6 2.457v11.543h-16v-20h7.363zm.826-2h-10.189v24h20v-14.386c0-2.391-6.648-9.614-9.811-9.614zm4.811 13h-2.628v3.686h.907v-1.472h1.49v-.732h-1.49v-.698h1.721v-.784zm-4.9 0h-1.599v3.686h1.599c.537 0 .961-.181 1.262-.535.555-.658.587-2.034-.062-2.692-.298-.3-.712-.459-1.2-.459zm-.692.783h.496c.473 0 .802.173.915.644.064.267.077.679-.021.948-.128.351-.381.528-.754.528h-.637v-2.12zm-2.74-.783h-1.668v3.686h.907v-1.277h.761c.619 0 1.064-.277 1.224-.763.095-.291.095-.597 0-.885-.16-.484-.606-.761-1.224-.761zm-.761.732h.546c.235 0 .467.028.576.228.067.123.067.366 0 .489-.109.199-.341.227-.576.227h-.546v-.944z"/></svg>
+                                <OptionText style={{color: COLOR_PDF}}>PDF</OptionText>
+                            </Option>
+                            <Option>
+                                <svg fill={COLOR_SEND_EMAIL} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/></svg>
+                                <OptionText style={{color: COLOR_SEND_EMAIL}}>Send Email</OptionText>
+                            </Option>
+                            <Option>
+                                <svg fill={COLOR_RESTFUL} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M14.666 8.334v3.666l1.463-2.215-1.463-1.451zm-3.092 4.167c.66-.384 1.242-.864 1.758-1.447v1.369c-.445.393-.926.731-1.449 1.018l-.309-.94zm-3.255 2.041c-.652.083-1.57.125-2.319.125v-.97c.688 0 1.551-.037 2.152-.113l.167.958zm2.789-.725l-.036.015c-.586.246-1.22.437-1.91.573l-.167-.958c.655-.131 1.257-.315 1.809-.556l.304.926zm10.892-13.817l-3 11-4.064-3.62 3.9-4.117-5.229 3.614-3.607-.877 12-6zm-3.015 14.779c0 4.546-5.777 9.221-8.221 9.221h-8.764v-22h11.527l-4 2h-5.527v18h5.938c4.155 0 2.638-6 2.638-6 3.349.921 6.003.403 6.003-3.21.28.65.406 1.318.406 1.989z"/></svg>
+                                <OptionText style={{color: COLOR_RESTFUL}}>RESTFul</OptionText>
+                            </Option>
+                            <Option>
+                                <svg fill={COLOR_REDIRECT} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M20 3c0-1.657-1.344-3-3-3s-3 1.343-3 3c0 .312.061.606.149.889l-4.21 3.157c.473.471.878 1.01 1.201 1.599l4.197-3.148c.477.316 1.048.503 1.663.503 1.656 0 3-1.343 3-3zm-2 0c0 .551-.448 1-1 1s-1-.449-1-1 .448-1 1-1 1 .449 1 1zm3 12.062c1.656 0 3-1.343 3-3s-1.344-3-3-3c-1.281 0-2.367.807-2.797 1.938h-6.283c.047.328.08.66.08 1s-.033.672-.08 1h6.244c.396 1.195 1.509 2.062 2.836 2.062zm-1-3c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.448-1-1zm-20-.062c0 2.761 2.238 5 5 5s5-2.239 5-5-2.238-5-5-5-5 2.239-5 5zm2 0c0-1.654 1.346-3 3-3s3 1.346 3 3-1.346 3-3 3-3-1.346-3-3zm7.939 4.955l4.21 3.157c-.088.282-.149.576-.149.888 0 1.657 1.344 3 3 3s3-1.343 3-3-1.344-3-3-3c-.615 0-1.186.187-1.662.504l-4.197-3.148c-.324.589-.729 1.127-1.202 1.599zm6.061 4.045c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.449-1-1z"/></svg>
+                                <OptionText style={{color: COLOR_REDIRECT}}>Redirect</OptionText>
+                            </Option>
+                        </Options>
+                    </>
+                )
+            }
             <TableBox>
                 <TableScroll>
-                    <Table>
-                        <Thead>
-                            <Tr>
-                                <Th>No</Th>
-                                <Th>Job</Th>
-                                <Th>Date</Th>
-                                <Th>Setting</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {
-                                Records.map((record, key) => {
-                                    return (
-                                        <>
-                                            <Tr className={`${isDetails ? "active" : ""} simple`}>
-                                                <Td>
-                                                    <Text className={"details-text"}>No.</Text>
-                                                    { key }
-                                                </Td>
-                                                <Td className={"job"}>
-                                                    <Text className={"details-text"}>Job</Text>
-                                                    {   record.pdf && 
-                                                            <TableIcon bgColor={pdfColor}>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M14.666 8.334v3.666l1.463-2.215-1.463-1.451zm-3.092 4.167c.66-.384 1.242-.864 1.758-1.447v1.369c-.445.393-.926.731-1.449 1.018l-.309-.94zm-3.255 2.041c-.652.083-1.57.125-2.319.125v-.97c.688 0 1.551-.037 2.152-.113l.167.958zm2.789-.725l-.036.015c-.586.246-1.22.437-1.91.573l-.167-.958c.655-.131 1.257-.315 1.809-.556l.304.926zm10.892-13.817l-3 11-4.064-3.62 3.9-4.117-5.229 3.614-3.607-.877 12-6zm-3.015 14.779c0 4.546-5.777 9.221-8.221 9.221h-8.764v-22h11.527l-4 2h-5.527v18h5.938c4.155 0 2.638-6 2.638-6 3.349.921 6.003.403 6.003-3.21.28.65.406 1.318.406 1.989z"/></svg>
-                                                            </TableIcon>
-                                                    }
-                                                    {
-                                                        record.sendEmail &&
-                                                            <TableIcon bgColor={sendEmailColor}>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/></svg>
-                                                            </TableIcon>
-                                                    }
-                                                    {
-                                                        record.restful && 
-                                                            <TableIcon bgColor={restfulColor}>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M14.666 8.334v3.666l1.463-2.215-1.463-1.451zm-3.092 4.167c.66-.384 1.242-.864 1.758-1.447v1.369c-.445.393-.926.731-1.449 1.018l-.309-.94zm-3.255 2.041c-.652.083-1.57.125-2.319.125v-.97c.688 0 1.551-.037 2.152-.113l.167.958zm2.789-.725l-.036.015c-.586.246-1.22.437-1.91.573l-.167-.958c.655-.131 1.257-.315 1.809-.556l.304.926zm10.892-13.817l-3 11-4.064-3.62 3.9-4.117-5.229 3.614-3.607-.877 12-6zm-3.015 14.779c0 4.546-5.777 9.221-8.221 9.221h-8.764v-22h11.527l-4 2h-5.527v18h5.938c4.155 0 2.638-6 2.638-6 3.349.921 6.003.403 6.003-3.21.28.65.406 1.318.406 1.989z"/></svg>
-                                                            </TableIcon>
-                                                    }
-                                                    {
-                                                        record.redirect && 
-                                                            <TableIcon bgColor={redirectColor}>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M20 3c0-1.657-1.344-3-3-3s-3 1.343-3 3c0 .312.061.606.149.889l-4.21 3.157c.473.471.878 1.01 1.201 1.599l4.197-3.148c.477.316 1.048.503 1.663.503 1.656 0 3-1.343 3-3zm-2 0c0 .551-.448 1-1 1s-1-.449-1-1 .448-1 1-1 1 .449 1 1zm3 12.062c1.656 0 3-1.343 3-3s-1.344-3-3-3c-1.281 0-2.367.807-2.797 1.938h-6.283c.047.328.08.66.08 1s-.033.672-.08 1h6.244c.396 1.195 1.509 2.062 2.836 2.062zm-1-3c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.448-1-1zm-20-.062c0 2.761 2.238 5 5 5s5-2.239 5-5-2.238-5-5-5-5 2.239-5 5zm2 0c0-1.654 1.346-3 3-3s3 1.346 3 3-1.346 3-3 3-3-1.346-3-3zm7.939 4.955l4.21 3.157c-.088.282-.149.576-.149.888 0 1.657 1.344 3 3 3s3-1.343 3-3-1.344-3-3-3c-.615 0-1.186.187-1.662.504l-4.197-3.148c-.324.589-.729 1.127-1.202 1.599zm6.061 4.045c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.449-1-1z"/></svg>
-                                                            </TableIcon>
-                                                    }
-                                                </Td>
-                                                <Td>
-                                                    <Text className={"details-text"}>DATE</Text>
-                                                    { record.date }
-                                                </Td>
-                                                <Td>
-                                                    <DeleteBtn><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z"/></svg></DeleteBtn>
-                                                </Td>
-                                            </Tr>
-                                            <Tr className={`${isDetails ? "active" : ""} details`}>
-                                                <Td className={"td-msg"} colSpan={4}>
-                                                    <Text className={"details-text"}>Message</Text>
-                                                    <Msg>{ record.message }</Msg>
-                                                </Td>
-                                            </Tr>
-                                            <Tr className={"tmp"}>
-                                                <Td></Td>
-                                            </Tr>
-                                        </>
-                                    )
-                                })
-                            }
-                        </Tbody>
-                    </Table>
+                    {
+                        resultList ? (
+                            <Table>
+                                <Thead>
+                                    <Tr>
+                                        <Th>No</Th>
+                                        <Th>Job</Th>
+                                        <Th>Date</Th>
+                                        <Th>Setting</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {
+                                        resultList.map((result, key) => {
+                                            return (
+                                                <React.Fragment key={key}>
+                                                    <Tr className={`${isDetails ? "active" : ""} simple`}>
+                                                        <Td>
+                                                            <Text className={"details-text"}>No.</Text>
+                                                            { key }
+                                                        </Td>
+                                                        <Td className={"job"}>
+                                                            <Text className={"details-text"}>Job</Text>
+                                                            {   result.isPdf && 
+                                                                    <TableIcon bgColor={COLOR_PDF}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M11.363 2c4.155 0 2.637 6 2.637 6s6-1.65 6 2.457v11.543h-16v-20h7.363zm.826-2h-10.189v24h20v-14.386c0-2.391-6.648-9.614-9.811-9.614zm4.811 13h-2.628v3.686h.907v-1.472h1.49v-.732h-1.49v-.698h1.721v-.784zm-4.9 0h-1.599v3.686h1.599c.537 0 .961-.181 1.262-.535.555-.658.587-2.034-.062-2.692-.298-.3-.712-.459-1.2-.459zm-.692.783h.496c.473 0 .802.173.915.644.064.267.077.679-.021.948-.128.351-.381.528-.754.528h-.637v-2.12zm-2.74-.783h-1.668v3.686h.907v-1.277h.761c.619 0 1.064-.277 1.224-.763.095-.291.095-.597 0-.885-.16-.484-.606-.761-1.224-.761zm-.761.732h.546c.235 0 .467.028.576.228.067.123.067.366 0 .489-.109.199-.341.227-.576.227h-.546v-.944z"/></svg>
+                                                                    </TableIcon>
+                                                            }
+                                                            {
+                                                                result.isSendEmail &&
+                                                                    <TableIcon bgColor={COLOR_SEND_EMAIL}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/></svg>
+                                                                    </TableIcon>
+                                                            }
+                                                            {
+                                                                result.isRestful && 
+                                                                    <TableIcon bgColor={COLOR_RESTFUL}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M14.666 8.334v3.666l1.463-2.215-1.463-1.451zm-3.092 4.167c.66-.384 1.242-.864 1.758-1.447v1.369c-.445.393-.926.731-1.449 1.018l-.309-.94zm-3.255 2.041c-.652.083-1.57.125-2.319.125v-.97c.688 0 1.551-.037 2.152-.113l.167.958zm2.789-.725l-.036.015c-.586.246-1.22.437-1.91.573l-.167-.958c.655-.131 1.257-.315 1.809-.556l.304.926zm10.892-13.817l-3 11-4.064-3.62 3.9-4.117-5.229 3.614-3.607-.877 12-6zm-3.015 14.779c0 4.546-5.777 9.221-8.221 9.221h-8.764v-22h11.527l-4 2h-5.527v18h5.938c4.155 0 2.638-6 2.638-6 3.349.921 6.003.403 6.003-3.21.28.65.406 1.318.406 1.989z"/></svg>
+                                                                    </TableIcon>
+                                                            }
+                                                            {
+                                                                result.isRedirect && 
+                                                                    <TableIcon bgColor={COLOR_REDIRECT}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M20 3c0-1.657-1.344-3-3-3s-3 1.343-3 3c0 .312.061.606.149.889l-4.21 3.157c.473.471.878 1.01 1.201 1.599l4.197-3.148c.477.316 1.048.503 1.663.503 1.656 0 3-1.343 3-3zm-2 0c0 .551-.448 1-1 1s-1-.449-1-1 .448-1 1-1 1 .449 1 1zm3 12.062c1.656 0 3-1.343 3-3s-1.344-3-3-3c-1.281 0-2.367.807-2.797 1.938h-6.283c.047.328.08.66.08 1s-.033.672-.08 1h6.244c.396 1.195 1.509 2.062 2.836 2.062zm-1-3c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.448-1-1zm-20-.062c0 2.761 2.238 5 5 5s5-2.239 5-5-2.238-5-5-5-5 2.239-5 5zm2 0c0-1.654 1.346-3 3-3s3 1.346 3 3-1.346 3-3 3-3-1.346-3-3zm7.939 4.955l4.21 3.157c-.088.282-.149.576-.149.888 0 1.657 1.344 3 3 3s3-1.343 3-3-1.344-3-3-3c-.615 0-1.186.187-1.662.504l-4.197-3.148c-.324.589-.729 1.127-1.202 1.599zm6.061 4.045c0-.551.448-1 1-1s1 .449 1 1-.448 1-1 1-1-.449-1-1z"/></svg>
+                                                                    </TableIcon>
+                                                            }
+                                                        </Td>
+                                                        <Td>
+                                                            <Text className={"details-text"}>DATE</Text>
+                                                            { getTime(result.date) }
+                                                        </Td>
+                                                        <Td>
+                                                            <Text className={"details-text"}>Delete</Text>
+                                                            <DeleteBtn disabled={exeLoading} onClick={e => handleMutationDeleteResult(key)}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z"/></svg></DeleteBtn>
+                                                        </Td>
+                                                    </Tr>
+                                                    <Tr className={`${isDetails ? "active" : ""} details`}>
+                                                        <Td className={"td-msg"} colSpan={4}>
+                                                            <Text className={"details-text"}>Message</Text>
+                                                            <Msg>{ result.message }</Msg>
+                                                        </Td>
+                                                    </Tr>
+                                                    <Tr className={"tmp"}>
+                                                        <Td></Td>
+                                                    </Tr>
+                                                </React.Fragment>
+                                            )
+                                        })
+                                    } 
+                                </Tbody>
+                            </Table>
+                        ) : (
+                            <Empty>
+                                <EmptyText>No recent record exists.</EmptyText>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path d="M6 22v-16h16v7.543c0 4.107-6 2.457-6 2.457s1.518 6-2.638 6h-7.362zm18-7.614v-10.386h-20v20h10.189c3.163 0 9.811-7.223 9.811-9.614zm-10 1.614h-5v-1h5v1zm5-4h-10v1h10v-1zm0-3h-10v1h10v-1zm2-7h-19v19h-2v-21h21v2z"/></svg>
+                            </Empty>
+                        )
+                    }
                 </TableScroll>
             </TableBox>
         </Container>

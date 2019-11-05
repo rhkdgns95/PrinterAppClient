@@ -12,6 +12,11 @@ const Container = styled.div`
 `;
 const CardList = styled.div`
     display: flex;
+    transition: .3s;
+    &.active {
+        justify-content: center;
+        align-items: center;
+    }
 `;
 const TopTitle = styled.h2`
     text-align: center;
@@ -258,7 +263,7 @@ const Main: React.FC<IProps> = ({
                 <BottomTitleWrapper>Create a Grouping for the Printer Middleware</BottomTitleWrapper>
             </BottomTitle>
             <MainTitle>GROUPING</MainTitle>
-            <CardList>
+            <CardList className={groups && groups.length > 2 ? "active" : ""}>
                 {
                     groups && (
                             groups.map((group, key) => {
@@ -275,15 +280,19 @@ const Main: React.FC<IProps> = ({
                         )     
                     )
                 }
-                {
+                {/* {
                     !groups && (
                         <div>그룹핑 없음 (디자인 수정예정..)</div>
                     )
+                } */}
+                {
+                    (!groups || groups.length <= 2) && (
+                        <AddGroupButton onClick={e => {e.preventDefault(); toggleCreateModal();}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+                        </AddGroupButton>
+                    ) 
                 }
                 
-                <AddGroupButton onClick={e => {e.preventDefault(); toggleCreateModal();}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
-                </AddGroupButton>
             </CardList>
             
         </Container>

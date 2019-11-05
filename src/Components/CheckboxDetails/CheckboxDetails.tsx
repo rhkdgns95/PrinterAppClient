@@ -43,6 +43,7 @@ const InputCheckbox = styled.input`
         & ~ label {
             border: 2px solid #0764ff;
             box-shadow: 0 2px 4px rgba(0,0,0,.24), 0 4px 6px rgba(0,0,0,.42);
+            background-color: inherit;
             & svg {
                 fill: #0764ff;
             }
