@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { IMainContext } from "../../Types/types";
-import { DeleteResultMutationVariables } from "../../Types/resolvers";
-import { useMutation } from "react-apollo";
+import { DeleteResultMutationVariables, GetDocsQueryResponse } from "../../Types/resolvers";
+import { useMutation, useQuery } from "react-apollo";
 import { toast } from "react-toastify";
-import { DELETE_RESULT, GET_ALL_RESULT } from "./MainQueries";
+import { DELETE_RESULT, GET_ALL_RESULT, GET_DOCS } from "./MainQueries";
 import { ApolloCache } from "apollo-cache";
 
 const LOAIDNG_TIME = 1000;
@@ -14,8 +14,11 @@ const InitContext: IMainContext = {
     onStep: () => {},
     isDetails: false,
     onToggleDetails: () => {},
-    mutationDeleteResult: () => {}
+    mutationDeleteResult: () => {},
+    dataGetDocs: {GetDocs: {ok: false, error: "", docs: []}},
+    loadingGetDocs: true
 };
+
 const MainContext: React.Context<IMainContext> = React.createContext<IMainContext>(InitContext);
 
 const useMainContext = () => useContext(MainContext);
@@ -36,6 +39,18 @@ const useMainFetch = (): {value: IMainContext} => {
         }
     });
     
+    const { data: dataGetDocs, loading: loadingGetDocs } = useQuery<GetDocsQueryResponse, any>(GET_DOCS, {
+        partialRefetch: true,
+        fetchPolicy: "cache-and-network",
+        // pollInterval: 10000,
+        onCompleted: data => {
+            console.log("GetDocs Success: ", data);
+        },
+        onError: data => {
+            console.log("GetDocs error: ", data);
+        }
+    });
+
     const onStep = (newStep: number) => {
         setStep(newStep);
     }
@@ -52,6 +67,10 @@ const useMainFetch = (): {value: IMainContext} => {
     
     useEffect(() => {
         setTimeout(MainLoading, LOAIDNG_TIME);
+
+        return () => {
+            alert("종료");
+        }
     }, []);
     
 
@@ -62,7 +81,9 @@ const useMainFetch = (): {value: IMainContext} => {
             onStep,
             isDetails,
             onToggleDetails,
-            mutationDeleteResult
+            mutationDeleteResult,
+            loadingGetDocs,
+            dataGetDocs
         }
     };
 }

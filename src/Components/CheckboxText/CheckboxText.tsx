@@ -60,6 +60,7 @@ interface IProps {
     checked: boolean;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
 const CheckboxText: React.FC<IProps> = ({
     text,
     name,

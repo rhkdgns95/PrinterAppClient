@@ -100,9 +100,12 @@ interface IProps extends RouteComponentProps<any>{
 const HomeContainer: React.FC<IProps> = ({ location, history }) => {
     const { state } = location;
     
-    if(!state || !state.currentFile || state.currentFile === "") {
+    if((!state || !state.currentFile || state.currentFile === "") ||
+        (!state || !state.accepted)) {
         history.push("/");
     }
+    const { accepted } = state;
+    console.log("ACCPETED: ", accepted);
     const { cache } = useApolloClient();
     const getGroupList: GetAllGrouping | null = useGetAllGrouping(cache);
     
@@ -124,7 +127,8 @@ const HomeContainer: React.FC<IProps> = ({ location, history }) => {
         setTimeout(() => {
             mutationStartForGrouping({
                 variables: {
-                    groupId: parseInt(selectedCardIndex)
+                    groupId: parseInt(selectedCardIndex),
+                    accepted
                 }
             });
         }, 1500);

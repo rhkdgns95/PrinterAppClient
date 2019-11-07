@@ -38,10 +38,24 @@ export interface DeleteGroupingResponse {
 }
 export interface StartForGroupingMutationVariables {
     groupId: number;
+    accepted: number;
 }
 export interface StartForGroupingMutationResponse {
-    StartForGrouping: StartForGrouping
+    StartForGrouping: StartForGrouping;
 }
 export interface DeleteResultMutationVariables {
-    index: number
+    index: number;
 };
+type Docs = {
+    accepted: number;
+    title: string;
+    preview_path: string;
+}
+interface GetDocs {
+    ok: boolean;
+    error: string;
+    docs: Array<Docs>;
+}
+export interface GetDocsQueryResponse {
+    GetDocs: GetDocs;
+}

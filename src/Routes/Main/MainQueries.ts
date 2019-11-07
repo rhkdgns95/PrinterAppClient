@@ -19,3 +19,16 @@ export const DELETE_RESULT = gql`
         DeleteResult(index: $index) @client 
     }
 `;
+export const GET_DOCS = gql`
+    { 
+        GetDocs {
+            ok
+            error
+            docs {
+                accepted
+                title
+                preview_path
+            }
+        }
+    }
+`;

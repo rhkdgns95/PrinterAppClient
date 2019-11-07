@@ -177,6 +177,7 @@ interface IProps {
     onStep: (newStep: number) => {};
     step: number;
 }
+
 const MainPresenter: React.FC<IProps> = ({
     loading,
     onStep,
@@ -203,13 +204,10 @@ const MainPresenter: React.FC<IProps> = ({
                             {
                                 step === 1 && <GoListBtn onClick={e => onStep(0)}>Main</GoListBtn>
                             }
-                            
                         </SlideScreen>
-                        
                     </Box>
                 )
             }
-            
         </Container>
     )
 };

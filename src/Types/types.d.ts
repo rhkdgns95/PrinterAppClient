@@ -1,3 +1,5 @@
+import { GetDocsQueryResponse } from "./resolvers";
+
 interface ITheme {
     greenColor: string;
     blueColor: string;
@@ -53,4 +55,6 @@ interface IMainContext {
     isDetails: boolean;
     onToggleDetails: () => any;
     mutationDeleteResult: ({variables: {index: number}}) => any;
+    loadingGetDocs: boolean;
+    dataGetDocs?: GetDocsQueryResponse;
 }

@@ -30,8 +30,8 @@ const Bg = styled.div`
 const ImgBox = styled.div`
     position: relative;
     z-index: 2;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin-left: 15px;
     &:hover {
         width: 259px;
@@ -138,12 +138,14 @@ interface IProps {
     imgPath: string;
     title: string;
     date: string;
+    accepted: number;
 }
 const FileItem: React.FC<IProps> = ({
     no,
     imgPath,
     title,
-    date
+    date,
+    accepted
 }) => {
     const currentFile: string = title;
     return (
@@ -161,7 +163,8 @@ const FileItem: React.FC<IProps> = ({
                 <SelectedButton to={{
                     pathname: "/home",
                     state: {
-                        currentFile
+                        currentFile,
+                        accepted
                     }
                 }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24"><path d="M7.33 24l-2.83-2.829 9.339-9.175-9.339-9.167 2.83-2.829 12.17 11.996z"/></svg>

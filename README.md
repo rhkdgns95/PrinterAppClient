@@ -14,6 +14,9 @@
 - yarn add graphql-yoga
 - yarn add nodemon ts-node
 
+- npm install ghostscript4js --save 
+- sudo apt-get install node-gyp
+
 # API
 - [ ] GetGrouping
 - [ ] GetAllGrouping

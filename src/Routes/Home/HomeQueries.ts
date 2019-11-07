@@ -107,8 +107,14 @@ export const UPDATE_GROUPING = gql`
 `;
 
 export const START_FOR_GROUPING = gql`
-    mutation startForGrouping($groupId: Int!) {
-        StartForGrouping(groupId: $groupId) {
+    mutation startForGrouping(
+        $groupId: Int!
+        $accepted: Float!
+    ) {
+        StartForGrouping(
+            groupId: $groupId
+            accepted: $accepted    
+        ) {
             ok
             error
             grouping {

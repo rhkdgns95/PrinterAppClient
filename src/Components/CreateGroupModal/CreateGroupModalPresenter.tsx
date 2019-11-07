@@ -395,8 +395,8 @@ const CreateGroupModalPresenter: React.FC<IProps> = ({
                                         onChange={handleTextChangeFormGrouping}
                                         isFunction={isRestfulFunc.value}
                                     />
-                                    <CheckboxTextExtended className={"checkbox-text"} text={"함수형태"} name={"name"} onChange={isRestfulFunc.onChange} checked={isRestfulFunc.value}/>
-                                    <CheckboxTextExtended className={"checkbox-text"} text={"로깅여부"} name={"isLogging"} onChange={handleChangeRestfulCheckbox} checked={formCreateGrouping.restful.isLogging}/>
+                                    <CheckboxTextExtended className={"checkbox-text"} text={"함수형"} name={"name"} onChange={isRestfulFunc.onChange} checked={isRestfulFunc.value}/>
+                                    <CheckboxTextExtended className={"checkbox-text"} text={"로깅"} name={"isLogging"} onChange={handleChangeRestfulCheckbox} checked={formCreateGrouping.restful.isLogging}/>
                                     <CheckboxTextExtended className={"checkbox-text"} text={"파일전송 여부"} name={"isSendFile"} onChange={handleChangeRestfulCheckbox} checked={formCreateGrouping.restful.isSendFile}/>
                                 </FormCardExtended>
                             )
