@@ -201,9 +201,10 @@ export const client = new ApolloClient({
                 return null;
             },
             CreateResult: (_, result: GroupResult, { cache }) => {
-                const { isPdf, isSendEmail, isRedirect, isRestful, message, date } = result;
+                const { isPdf, isSendEmail, isRedirect, isRestful, message, date, ok } = result;
                 const newResult = {
                     __typename: "Result",
+                    ok,
                     isPdf,
                     isSendEmail,
                     isRedirect,
@@ -234,7 +235,10 @@ export const client = new ApolloClient({
                     }
                 });
                 
-                return null;
+                return {
+                    ok,
+                    message
+                };
             },
             DeleteResult: (_, { index }, { cache }) => {
                 const strResults = localStorage.getItem("X-RESULT") || ""

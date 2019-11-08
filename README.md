@@ -13,6 +13,7 @@
 *TEST
 - yarn add graphql-yoga
 - yarn add nodemon ts-node
+- yarn add datauri
 
 - npm install ghostscript4js --save 
 - sudo apt-get install node-gyp

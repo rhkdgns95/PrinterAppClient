@@ -100,14 +100,17 @@ const InitGroupData: Grouping = {
         port: ""
     }
 }
-const useCreateResult = () => {
+const useCreateResult = (history) => {
     const [ mutationCreateResult ] = useMutation(CREATE_RESULT, {
         onCompleted: data => {
-            toast.success("Success");
+            history.replace("/");
+            // history.replace("/", {state: {ok: true, error: null}});
         },
         onError: data => {
-            toast.error("Failed");
-            console.log("ERROR: ", data);
+            // console.log("DATA: ", data);
+            // console.log("useCreateResult Error: ", data);
+            history.replace("/");
+            // history.replace("/", {state: {ok: false, error: data}});
         }
     });
     return {
@@ -115,7 +118,7 @@ const useCreateResult = () => {
     };
 };
 
-const useStartGrouping = (mutationCreateResult: any) => {
+const useStartGrouping = (mutationCreateResult: any, selectedGrouping: Grouping) => {
     const handleCompleted = (data: StartForGroupingMutationResponse) => {
         const { StartForGrouping: {error, grouping, ok, message} } = data;
         
@@ -123,8 +126,10 @@ const useStartGrouping = (mutationCreateResult: any) => {
             // Completed!
             // console.log("useStatrGrouping - handleCompleted: ", grouping , message);
             const { pdf, sendEmail, restful, redirect } = grouping;
+            toast.success(`Success: Grouping - ${grouping.groupName}`);
             mutationCreateResult({
                 variables: {
+                    ok: true,
                     isPdf: pdf.isChecked,
                     isSendEmail: sendEmail.isChecked,
                     isRedirect: redirect.isChecked,
@@ -135,6 +140,18 @@ const useStartGrouping = (mutationCreateResult: any) => {
             });
         } else {
             // Error!
+            toast.error(`Failed: ${error ? error : "error"}`);
+            mutationCreateResult({
+                variables: {
+                    ok: false,
+                    isPdf: selectedGrouping.pdf.isChecked,
+                    isSendEmail: selectedGrouping.sendEmail.isChecked,
+                    isRedirect: selectedGrouping.redirect.isChecked,
+                    isRestful: selectedGrouping.restful.isChecked,
+                    message: error ? error : "failed",
+                    date: new Date().getTime() + ""
+                }
+            });
         }
     }
     const [ mutationStartForGrouping, { loading,data: startForGroupingData, client } ] = useMutation<StartForGroupingMutationResponse, StartForGroupingMutationVariables>(START_FOR_GROUPING,

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import MainPresenter from "./MainPresenter";
 import { useMainContext, MainProvider } from "./MainProvider";
 
-const MainContainer = React.memo(() => {
+const MainContainer = React.memo( ()=> {
     const { loading, onStep, step } = useMainContext();
     return (
         <MainPresenter 

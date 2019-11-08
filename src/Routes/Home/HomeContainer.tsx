@@ -99,24 +99,22 @@ interface IProps extends RouteComponentProps<any>{
 }
 const HomeContainer: React.FC<IProps> = ({ location, history }) => {
     const { state } = location;
-    
     if((!state || !state.currentFile || state.currentFile === "") ||
         (!state || !state.accepted)) {
         history.push("/");
     }
     const { accepted } = state;
-    console.log("ACCPETED: ", accepted);
     const { cache } = useApolloClient();
     const getGroupList: GetAllGrouping | null = useGetAllGrouping(cache);
     
     // var initGroupList: Grouping = JSON.parse(groups.groupList) === "" ? InitGroupList : groups.groupList;
     const { loading, groupList } = useFetch(InitGroupList);
-    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping, onExeLoading, exeLoading, isRestfulFunc, toggleIsUpdate } = useHomeContext();
+    const { isDetails, toggleCreateModal, onErrorLoading, resetFormCreateGrouping, selectedCardIndex, handleSelectedGrouping, onExeLoading, exeLoading, isRestfulFunc, toggleIsUpdate, selectedGrouping } = useHomeContext();
     const { data: tmpData, mutationCreateGrouping } = useCreateGrouping();
     const { mutationUpdateGrouping } = useUpdateGrouping();
     const { mutationDeleteGrouping } = useDeleteGrouping();
-    const { mutationCreateResult } = useCreateResult();
-    const { mutationStartForGrouping, startForGroupingData } = useStartGrouping(mutationCreateResult); 
+    const { mutationCreateResult } = useCreateResult(history);
+    const { mutationStartForGrouping, startForGroupingData } = useStartGrouping(mutationCreateResult, selectedGrouping); 
     
     const handleStartForGrouping = () => {
         if(exeLoading) {

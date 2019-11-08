@@ -151,6 +151,7 @@ export const START_FOR_GROUPING = gql`
 
 export const CREATE_RESULT = gql`
     mutation createResult(
+        $ok: Boolean!
         $isPdf: Boolean!
         $idSendEmail: Boolean!
         $isRedirect: Boolean!
@@ -159,12 +160,16 @@ export const CREATE_RESULT = gql`
         $date: String!
     ) {
         CreateResult(
+            ok: $ok
             isPdf: $isPdf
             isSendEmail: $isSendEmail
             isRedirect: $isRedirect
             isRestful: $isRestful
             message: $message
             date: $date
-        ) @client
+        ) @client {
+            ok
+            message
+        }
     }
 `;

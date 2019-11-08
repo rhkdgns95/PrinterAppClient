@@ -15,7 +15,7 @@ const Container = styled.div`
             top: 100%;
             left: 30px;
             transform: translateX(-50%);
-            background-color: #8b9be3;
+            background-color: #0764ff;
             transition: .2s;
         }
         &.active {
@@ -37,7 +37,7 @@ const JobIcon = styled.div`
     width: 37px;
     height: 37px;
     transform: translate(-50%, -50%);
-    background-color: #8b9be3;
+    background-color: #0764ff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,7 +54,7 @@ const Title = styled.h1`
     padding-left: 10px;
     padding-top: 10px;
     font-size: 15px;
-    color: #5e4782;
+    color: #0764ff;
     margin: 0;
     margin-bottom: 10px;
     transition: .2s;

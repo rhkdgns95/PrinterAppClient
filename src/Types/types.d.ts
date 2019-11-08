@@ -39,6 +39,7 @@ export type Grouping = {
 // Result
 
 export type GroupResult = {
+    ok: boolean;
     isPdf: boolean;
     isSendEmail: boolean;
     isRestful: boolean;
@@ -46,7 +47,10 @@ export type GroupResult = {
     message: string;
     date: string;
 }
-
+export type AutoSearch = {
+    checked: boolean;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => any;
+}
 // Context
 interface IMainContext {
     loading: boolean;
@@ -57,4 +61,5 @@ interface IMainContext {
     mutationDeleteResult: ({variables: {index: number}}) => any;
     loadingGetDocs: boolean;
     dataGetDocs?: GetDocsQueryResponse;
+    autoSearch: AutoSearch;
 }

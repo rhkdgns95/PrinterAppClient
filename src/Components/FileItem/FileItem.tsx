@@ -73,7 +73,7 @@ const Img = styled.div<IImg>`
     width: 100%;
     height: 100%;
     background: url('${props => props.imgPath}');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 6px;

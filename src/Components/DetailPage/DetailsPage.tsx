@@ -28,7 +28,6 @@ const Header = styled.div`
     padding-left: 80px;
 `;
 const HeaderWrapper = styled.div`
-    
 `;
 const HeaderTitle = styled.h1`
     display: flex;
@@ -49,9 +48,10 @@ const HeaderTitle = styled.h1`
     }
 `;
 const SubTitle = styled.span`
-    font-size: 15px;
-    color: #7e7f88;
+    font-size: 13px;
+    color: darkgray;
     margin: 0;
+    font-weight: 450;
 `;
 const Box = styled.div`
     position: relative;
@@ -65,6 +65,11 @@ const Wrapper = styled.div`
     padding: 30px 30px
     margin-bottom: 20px;    
     width: 49%;
+    &.active {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+    }
     &:first-child {
         
     }
@@ -203,11 +208,11 @@ const DetailsPage: React.FC<IProps> = ({
                         {
                             isUpdate ? (
                                 <React.Fragment>
-                                    Group Edit <SubTitle>[{ groupName }]</SubTitle>
+                                    Group Edit <SubTitle> > { groupName } </SubTitle>
                                 </React.Fragment>
                             ) : (
                                 <React.Fragment>
-                                    Group Details <SubTitle>[{ groupName }]</SubTitle>
+                                    Group Details <SubTitle> > { groupName } </SubTitle>
                                 </React.Fragment>
                             )
                         }
@@ -229,7 +234,7 @@ const DetailsPage: React.FC<IProps> = ({
                     </ButtonBox>
                     
                 </Wrapper>
-                <Wrapper>
+                <Wrapper className={"active"}>
                     {/* <Title>Grouping Details</Title> */}
                     {
                         pdf.isChecked && (

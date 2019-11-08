@@ -16,27 +16,52 @@ const InitContext: IMainContext = {
     onToggleDetails: () => {},
     mutationDeleteResult: () => {},
     dataGetDocs: {GetDocs: {ok: false, error: "", docs: []}},
-    loadingGetDocs: true
+    loadingGetDocs: true,
+    autoSearch: {checked: false, onChange: () => {}}
 };
 
 const MainContext: React.Context<IMainContext> = React.createContext<IMainContext>(InitContext);
 
 const useMainContext = () => useContext(MainContext);
-
+const useInput = (initData: boolean) => {
+    const [checked, setChecked] = useState<boolean>(initData);
+    const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        const { target: { checked }} = event;
+        setChecked(checked);
+    }
+    return {
+        checked, 
+        onChange
+    };
+}
 const GetAllResult = (cache: ApolloCache<any>) => {
     const data: any | null = cache.readQuery({ query: GET_ALL_RESULT });
     return data.result.resultList;
 }
+const isPolling = (isPolling: boolean) => {
+    if(isPolling) {
+        return {
+            pollInterval: 5000
+        };
+    } else {
+        return {
+            pollInterval: 90000000
+        };
+    }
+};
+
 const useMainFetch = (): {value: IMainContext} => {
     
     const [loading, setLoading] = useState<boolean>(true);
     const [step, setStep] = useState<number>(0);
     const [isDetails, setIsDetails] = useState<boolean>(false);
-    
+    const autoSearch = useInput(false);
+
     const [mutationDeleteResult] = useMutation<any, DeleteResultMutationVariables>(DELETE_RESULT, {
         onCompleted: data => {
             toast.success("최근기록 1건 제거!");
-        }
+        },
+        
     });
     
     const { data: dataGetDocs, loading: loadingGetDocs } = useQuery<GetDocsQueryResponse, any>(GET_DOCS, {
@@ -44,8 +69,9 @@ const useMainFetch = (): {value: IMainContext} => {
         fetchPolicy: "cache-and-network",
         // pollInterval: 10000,
         onCompleted: data => {
-            console.log("GetDocs Success: ", data);
+            // console.log("GetDocs Success: ", data);
         },
+        ...isPolling(autoSearch.checked),
         onError: data => {
             console.log("GetDocs error: ", data);
         }
@@ -69,7 +95,7 @@ const useMainFetch = (): {value: IMainContext} => {
         setTimeout(MainLoading, LOAIDNG_TIME);
 
         return () => {
-            alert("종료");
+            // ComponentDidMount
         }
     }, []);
     
@@ -83,7 +109,8 @@ const useMainFetch = (): {value: IMainContext} => {
             onToggleDetails,
             mutationDeleteResult,
             loadingGetDocs,
-            dataGetDocs
+            dataGetDocs,
+            autoSearch
         }
     };
 }

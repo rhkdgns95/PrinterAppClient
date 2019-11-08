@@ -4,6 +4,8 @@ import RecordTable from "../RecordTable";
 import FileItem from "../FileItem";
 import { useMainContext } from "../../Routes/Main/MainProvider";
 import { getTime } from "../../Utils/getTime";
+import AutoCheckbox from "../AutoCheckbox";
+import SpinnerPolling from "../SpinnerPolling";
 
 const Container = styled.div`
     background-color: #e8ebef;
@@ -86,92 +88,85 @@ const EmptyText = styled.span`
     z-index: 2;
     text-shadow: 0 1px 1px rgba(0,0,0,.1);
 `;
+const TextBar = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    margin: 0 auto;
+    width: 87%;
+    padding-bottom: 10px;
+`;
+const SearchText = styled.span`
+    color: #5c8b96;
+    font-size: 12px;
+    margin-right: 5px;
+`;
 const GetFileImage = (path: string) => {
     
     // rawFile.send(null);
 }
+
 const ListBox = () => {
-    const { dataGetDocs, loadingGetDocs } = useMainContext();
-    if(loadingGetDocs) {
-        return <div>Loading...</div>
-    }
+    const { dataGetDocs, loadingGetDocs, autoSearch } = useMainContext();
+    // if(loadingGetDocs) {
+    //     return <div>Loading...</div>
+    // }
     
     // const filePath = "C:/Users/rhkdg/Desktop/project/web/printerApp/server/src/core/src/lib/temp/1111110193126152692214016673154244150.jpg";
     const filePath = "localhost/";
     // C:/Users/rhkdg/Desktop/project/web/printerApp/server/src/core/src/lib/temp/1111110193126152692214016673154244150.jpg
     GetFileImage(filePath);
     console.log("dataGetDocs: ", dataGetDocs);
-    
-    
     return (
         <Container>
             <Title>File List</Title>
-            <FileBoxScroll>
-                <FileBox>
-                    {
-                        dataGetDocs && dataGetDocs.GetDocs.docs.map((doc, key) => (
-                            <FileItemExtended
-                                key={key}
-                                no={key}
-                                title={doc.title}
-                                imgPath={"/tmp.png"}    
-                                accepted={doc.accepted}
-                                // imgPath={doc.preview_path }
-                                date={getTime(doc.accepted + "")}
-                            />
-                        ))
-                    }
-                    {/* <FileItemExtended 
-                        no={1}
-                        title={"Tmp File"}
-                        imgPath={"https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
-                        date={"2013-02-11"}
-                    />
-                    <FileItemExtended 
-                        no={2}
-                        title={"Todo"}
-                        imgPath={"https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
-                        date={"2013-02-11"}
-                    />
-                    <FileItemExtended 
-                        no={3}
-                        title={"My List"}
-                        imgPath={"https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
-                        date={"2013-02-11"}
-                    />
-                    <FileItemExtended 
-                        no={4}
-                        title={"Null File"}
-                        imgPath={"https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
-                        date={"2013-02-11"}
-                    />
-                    <FileItemExtended 
-                        no={5}
-                        title={"Test file"}
-                        imgPath={"https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
-                        date={"2013-02-11"}
-                    />
-                    <FileItemExtended 
-                        no={6}
-                        title={"RealTime file"}
-                        imgPath={"https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
-                        date={"2013-02-11"}
-                    />
-                    <FileItemExtended 
-                        no={7}
-                        title={"DataBase file"}
-                        imgPath={"https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}
-                        date={"2013-02-11"}
-                    /> */}
-                </FileBox>
+            <TextBar>
                 {
-                    dataGetDocs && dataGetDocs.GetDocs.docs.length <= 0 && (
-                        <Empty>
-                            <EmptyText>No file request.</EmptyText>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path d="M6 22v-16h16v7.543c0 4.107-6 2.457-6 2.457s1.518 6-2.638 6h-7.362zm18-7.614v-10.386h-20v20h10.189c3.163 0 9.811-7.223 9.811-9.614zm-10 1.614h-5v-1h5v1zm5-4h-10v1h10v-1zm0-3h-10v1h10v-1zm2-7h-19v19h-2v-21h21v2z"/></svg>
-                        </Empty>
+                    autoSearch.checked && (
+                        <>
+                            <SearchText>Searching...</SearchText>
+                            <SpinnerPolling />
+                        </>
                     )
                 }
+                <AutoCheckbox label={"auto"}/>
+            </TextBar>
+            <FileBoxScroll>
+                {
+                    (loadingGetDocs || !dataGetDocs) ? (
+                            <FileBox>
+                                
+                            </FileBox>
+                        ) : (
+                        <>
+                            <FileBox>
+                            {
+                                 dataGetDocs && dataGetDocs.GetDocs.docs.map((doc, key) => (
+                                    <FileItemExtended
+                                        key={key}
+                                        no={key}
+                                        title={doc.title}
+                                        // imgPath={"/tmp.png"}    
+                                        accepted={doc.accepted}
+                                        imgPath={doc.preview_path}
+                                        date={getTime(doc.accepted + "")}
+                                    />
+                                ))
+                            }
+                            </FileBox>
+                            {
+                                dataGetDocs && dataGetDocs.GetDocs.docs.length <= 0 && (
+                                    <Empty>
+                                        <EmptyText>No file request.</EmptyText>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path d="M6 22v-16h16v7.543c0 4.107-6 2.457-6 2.457s1.518 6-2.638 6h-7.362zm18-7.614v-10.386h-20v20h10.189c3.163 0 9.811-7.223 9.811-9.614zm-10 1.614h-5v-1h5v1zm5-4h-10v1h10v-1zm0-3h-10v1h10v-1zm2-7h-19v19h-2v-21h21v2z"/></svg>
+                                    </Empty>
+                                )
+                            }
+                        </>
+                    )
+                }
+                
                 {/* 파일리스트가 없는경우.... */}
                 
                 {/* <Empty>

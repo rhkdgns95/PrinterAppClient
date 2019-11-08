@@ -4,6 +4,7 @@ export const GET_ALL_RESULT = gql`
     {
         result @client {
             resultList {
+                ok
                 isPdf
                 isSendEmail
                 isRedirect
