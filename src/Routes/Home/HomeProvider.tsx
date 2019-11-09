@@ -35,6 +35,7 @@ const useGetGrouping = (index: number) => {
 const useCreateGrouping = () => {
     const [ mutationCreateGrouping, { data }] = useMutation<any, Grouping>(CREATE_GROUPING, {
         onCompleted: data => {
+            console.log("DATA: ", data);
         },
         onError: data => {
             console.log("useCreateGrouping Error: ", data);

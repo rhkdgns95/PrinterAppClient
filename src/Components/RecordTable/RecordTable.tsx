@@ -174,7 +174,7 @@ const DeleteBtn = styled.button`
     cursor: pointer;
     & > svg {
         transition: .3s;
-        fill: #ff9c9c;
+        fill: gray;
     }
     &:focus,
     &:active {

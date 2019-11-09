@@ -49,7 +49,7 @@ cache.writeData({
     data: {
         groups: {
             __typename: "Groups",
-            groupList: getCacheData()    
+            groupList: getCacheData()
         },
         result: {
             __typename: "Result",
@@ -82,13 +82,9 @@ export const client = new ApolloClient({
         Mutation: {
             CreateGrouping: (_, data: Grouping, { cache }) => {
                  
-                const x_grouping = localStorage.getItem("X-GROUPING") || "";
-                if(x_grouping === "") { // 없는 데이터
-                    // console.log("x_grouping 데이터 존재하지 않음!");
-                } else { // 데이터가 존재하는경우,
-                    // console.log("x_grouping 데이터 존재!");
-                    // console.log("Input Data: ", data);
-                    const groupList: Array<any> = JSON.parse(x_grouping);
+                const x_grouping = localStorage.getItem("X-GROUPING");
+                
+                const groupList: Array<any> = x_grouping ? JSON.parse(x_grouping) : [];
                     const { groupName, pdf, redirect, restful, sendEmail } = data;
                     const definedData = {
                         __typename: "GroupItem",
@@ -122,7 +118,6 @@ export const client = new ApolloClient({
                         }
                     });
                     return data;
-                }
                 
                 
                 // const groups = JSON.parse(`"${x_grouping}"`);

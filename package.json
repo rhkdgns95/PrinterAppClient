@@ -35,7 +35,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "cd src/tmp && nodemon -e ts --exec ts-node index"
+    "dev": "cd src && nodemon -e ts --exec ts-node index"
   },
   "eslintConfig": {
     "extends": "react-app"
