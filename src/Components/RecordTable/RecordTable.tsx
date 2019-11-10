@@ -15,7 +15,7 @@ const TableBox = styled.div`
     margin: 0 auto;
 `;
 const TableScroll = styled.div`
-    width: 100%;
+    width: 104%;
     background-color: #e8ebef;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -23,6 +23,7 @@ const TableScroll = styled.div`
     box-sizing: content-box;
     padding-right: 8px;
     padding-left: 5px;
+    margin-left: -15px
     ::-webkit-scrollbar {
         width: 5px;
       }
@@ -130,7 +131,7 @@ const Th = styled.th`
 `;
 
 const Td = styled.td`
-    padding: 10px;
+    padding: 10px 8px;
     color: #898989;
     font-size: 11px;
     &.td-msg {

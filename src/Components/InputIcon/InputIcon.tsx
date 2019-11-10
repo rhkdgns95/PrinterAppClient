@@ -174,7 +174,7 @@ const InputIcon: React.FC<IProps> = ({
     onChange,
     isFunction
 }) => {
-    const funcStart = `function tmp() { `;
+    const funcStart = `(doc) => { `;
     const funcEnd = `};`
     return (
         <Container className={`${className} ${isFunction ? "textarea" : ""}`}>

@@ -127,7 +127,7 @@ const useStartGrouping = (mutationCreateResult: any, selectedGrouping: Grouping)
             // Completed!
             // console.log("useStatrGrouping - handleCompleted: ", grouping , message);
             const { pdf, sendEmail, restful, redirect } = grouping;
-            toast.success(`Success: Grouping - ${grouping.groupName}`);
+            toast.success(`Success: ${error}`);
             mutationCreateResult({
                 variables: {
                     ok: true,
@@ -141,7 +141,7 @@ const useStartGrouping = (mutationCreateResult: any, selectedGrouping: Grouping)
             });
         } else {
             // Error!
-            toast.error(`Failed: ${error ? error : "error"}`);
+            toast.error(`Fail: ${error}`);
             mutationCreateResult({
                 variables: {
                     ok: false,
@@ -149,7 +149,7 @@ const useStartGrouping = (mutationCreateResult: any, selectedGrouping: Grouping)
                     isSendEmail: selectedGrouping.sendEmail.isChecked,
                     isRedirect: selectedGrouping.redirect.isChecked,
                     isRestful: selectedGrouping.restful.isChecked,
-                    message: error ? error : "failed",
+                    message,
                     date: new Date().getTime() + ""
                 }
             });

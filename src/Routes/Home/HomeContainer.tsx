@@ -88,7 +88,7 @@ const AvailableGroupName = (newGroupName: Grouping, groups: GetAllGrouping | nul
     }
 }
 const GetRestfulData = (data: string) => {
-    return `function tmp() { 
+    return `(doc) => { 
         ${data} 
     }`;
 }

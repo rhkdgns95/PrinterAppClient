@@ -117,7 +117,7 @@ const ListBox = () => {
     const filePath = "localhost/";
     // C:/Users/rhkdg/Desktop/project/web/printerApp/server/src/core/src/lib/temp/1111110193126152692214016673154244150.jpg
     GetFileImage(filePath);
-    console.log("dataGetDocs: ", dataGetDocs);
+    // console.log("dataGetDocs: ", dataGetDocs);
     return (
         <Container>
             <Title>File List</Title>
