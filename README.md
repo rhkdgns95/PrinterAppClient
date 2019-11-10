@@ -10,6 +10,8 @@
 - yarn add apollo-cache-inmemory --save
 - yarn add apollo-link
 - yarn add apollo-client
+- yarn add --dev gh-pages
+
 *TEST
 - yarn add graphql-yoga
 - yarn add nodemon ts-node
