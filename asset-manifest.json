@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.js": "/PrinterAppClient/static/js/main.74d784ed.chunk.js",
+    "main.js.map": "/PrinterAppClient/static/js/main.74d784ed.chunk.js.map",
+    "runtime-main.js": "/PrinterAppClient/static/js/runtime-main.3f2e7289.js",
+    "runtime-main.js.map": "/PrinterAppClient/static/js/runtime-main.3f2e7289.js.map",
+    "static/css/2.39017165.chunk.css": "/PrinterAppClient/static/css/2.39017165.chunk.css",
+    "static/js/2.3b367628.chunk.js": "/PrinterAppClient/static/js/2.3b367628.chunk.js",
+    "static/js/2.3b367628.chunk.js.map": "/PrinterAppClient/static/js/2.3b367628.chunk.js.map",
+    "index.html": "/PrinterAppClient/index.html",
+    "precache-manifest.5c202d21dcc95bc9dd8b636a9d3d2623.js": "/PrinterAppClient/precache-manifest.5c202d21dcc95bc9dd8b636a9d3d2623.js",
+    "service-worker.js": "/PrinterAppClient/service-worker.js",
+    "static/css/2.39017165.chunk.css.map": "/PrinterAppClient/static/css/2.39017165.chunk.css.map"
+  }
+}
